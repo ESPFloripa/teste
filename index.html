@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capacitação em Escuta Especializada | SMS Florianópolis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* [START] New Card Flip Styles */
+        .flip-card {
+            background-color: transparent;
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .flip-card-front {
+            background-color: white;
+        }
+        .flip-card-back {
+            background-color: #f8fafc; /* bg-slate-50 */
+            transform: rotateY(180deg);
+            padding: 2rem;
+        }
+        /* [END] New Card Flip Styles */
+        .flow-box {
+            @apply bg-white p-4 rounded-lg shadow-md text-center border-2 border-gray-200 transition-transform duration-300 hover:scale-105 hover:shadow-xl;
+        }
+        .flow-arrow {
+            @apply text-3xl text-gray-400 my-2;
+        }
+        /* Estilos para o Quiz */
+        .quiz-option {
+            @apply block w-full text-left p-4 my-2 border-2 border-gray-200 rounded-lg cursor-pointer transition-colors duration-300;
+        }
+        .quiz-option:hover:not(:disabled) {
+            @apply bg-gray-100;
+        }
+        /* FIX: Using direct CSS for feedback styles to ensure they are applied correctly */
+        .quiz-option.correct {
+            background-color: #dcfce7; /* Tailwind green-100 */
+            border-color: #22c55e; /* Tailwind green-500 */
+            color: #166534; /* Tailwind green-800 */
+            font-weight: 600; /* Tailwind font-semibold */
+        }
+        .quiz-option.incorrect {
+            background-color: #fee2e2; /* Tailwind red-100 */
+            border-color: #ef4444; /* Tailwind red-500 */
+            color: #991b1b; /* Tailwind red-800 */
+            font-weight: 600; /* Tailwind font-semibold */
+        }
+        .quiz-option:disabled {
+            @apply cursor-not-allowed opacity-70;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header e Navegação -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-blue-800">
+                <a href="#">Escuta Especializada</a>
+            </div>
+            <div class="hidden md:flex space-x-6 items-center">
+                <a href="#protocolo" class="text-gray-600 hover:text-blue-600 transition">O Protocolo</a>
+                <a href="#procedimentos" class="text-gray-600 hover:text-blue-600 transition">Procedimentos</a>
+                <a href="#fluxograma" class="text-gray-600 hover:text-blue-600 transition">Fluxograma</a>
+                <a href="#passo-a-passo" class="text-gray-600 hover:text-blue-600 transition">Passo a Passo</a>
+                <a href="#quiz" class="text-gray-600 hover:text-blue-600 transition">Quiz</a>
+                <a href="#recursos" class="text-gray-600 hover:text-blue-600 transition">Recursos</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </nav>
+        <!-- Menu Mobile -->
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="#protocolo" class="block py-2 text-gray-600 hover:text-blue-600 transition">O Protocolo</a>
+            <a href="#procedimentos" class="block py-2 text-gray-600 hover:text-blue-600 transition">Procedimentos</a>
+            <a href="#fluxograma" class="block py-2 text-gray-600 hover:text-blue-600 transition">Fluxograma</a>
+            <a href="#passo-a-passo" class="block py-2 text-gray-600 hover:text-blue-600 transition">Passo a Passo</a>
+            <a href="#quiz" class="block py-2 text-gray-600 hover:text-blue-600 transition">Quiz</a>
+            <a href="#recursos" class="block py-2 text-gray-600 hover:text-blue-600 transition">Recursos</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <!-- Seção Hero -->
+        <section class="bg-gray-800 text-center mb-20 py-20 px-6 rounded-xl shadow-lg">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Capacitação para Equipes de Saúde</h1>
+            <p class="text-lg text-gray-300 max-w-3xl mx-auto">Um guia prático e rápido para a aplicação do Protocolo de Escuta Especializada de Florianópolis na proteção de crianças e adolescentes.</p>
+        </section>
+
+        <!-- Seção O Protocolo -->
+        <section id="protocolo" class="mb-20 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-center mb-10 text-gray-800">O que é o Protocolo de Escuta Especializada?</h2>
+            <div class="bg-white p-8 rounded-xl shadow-lg">
+                <p class="mb-4 text-center max-w-4xl mx-auto">O Protocolo de Florianópolis, em conformidade com a <span class="font-semibold">Lei n° 13.431/2017</span> e o <span class="font-semibold">Decreto n° 9.603/2018</span>, normatiza os procedimentos para o atendimento de crianças e adolescentes em situação ou testemunhas de violência. Seu objetivo é garantir uma intervenção segura, respeitosa e eficaz, minimizando a revitimização e articulando as políticas públicas de proteção.</p>
+                
+                <p class="text-center font-semibold text-lg my-6 text-gray-800">Importante Diferenciar:</p>
+                
+                <!-- Abas Interativas -->
+                <div>
+                    <div class="border-b border-gray-200">
+                        <nav class="-mb-px flex justify-center space-x-4 md:space-x-8" aria-label="Tabs">
+                            <button class="tab-button active-tab group inline-flex items-center py-4 px-1 border-b-2 font-medium text-lg" data-tab="escuta-especializada">
+                                <svg class="w-6 h-6 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a2 2 0 01-2-2V7a2 2 0 012-2h4l4 4z"></path></svg>
+                                Escuta Especializada
+                            </button>
+                            <button class="tab-button group inline-flex items-center py-4 px-1 border-b-2 font-medium text-lg" data-tab="depoimento-especial">
+                               <svg class="w-6 h-6 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                Depoimento Especial
+                            </button>
+                        </nav>
+                    </div>
+                    <div class="mt-8">
+                        <div id="escuta-especializada" class="tab-content">
+                             <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-lg">
+                                <h3 class="font-bold text-xl mb-2 text-blue-800">Finalidade Principal: Proteção e Cuidado</h3>
+                                <p>Procedimento realizado pela rede de proteção (saúde, educação, assistência social) com o objetivo de <span class="font-semibold">garantir proteção social e prover cuidados</span>. Limita-se ao estritamente necessário para essa finalidade e não tem como objetivo produzir provas para investigação.</p>
+                            </div>
+                        </div>
+                        <div id="depoimento-especial" class="tab-content hidden">
+                            <div class="bg-orange-50 border-l-4 border-orange-500 p-6 rounded-r-lg">
+                                <h3 class="font-bold text-xl mb-2 text-orange-800">Finalidade Principal: Produção de Provas</h3>
+                                <p>Procedimento de oitiva da criança ou adolescente perante <span class="font-semibold">autoridade policial ou judiciária</span>. Tem como finalidade a <span class="font-semibold">produção de provas</span> para o processo de investigação e responsabilização.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção Procedimentos -->
+        <section id="procedimentos" class="mb-20 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-center mb-10 text-gray-800">Procedimentos Apresentados pelo Protocolo</h2>
+            <p class="text-center text-gray-600 mb-10 -mt-6">Passe o mouse sobre os cards para ver os detalhes.</p>
+            <div class="grid md:grid-cols-2 gap-8 h-[22rem]">
+                
+                <!-- Card 1 com Flip -->
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <h3 class="font-bold text-2xl text-teal-700">1. Acolhida de Revelação</h3>
+                            <p class="mt-4">Ocorre de forma espontânea, quando a criança ou adolescente demonstra sinais ou revela a violência.</p>
+                        </div>
+                        <div class="flip-card-back">
+                            <ul class="space-y-3 text-left list-disc list-inside">
+                                <li><span class="font-semibold">Quem realiza?</span> Qualquer profissional da rede.</li>
+                                <li><span class="font-semibold">Como?</span> Com postura ética, empática e sem julgamentos.</li>
+                                <li><span class="font-semibold">Ação principal:</span> Registrar a informação de forma fidedigna e compartilhá-la na rede de proteção para evitar revitimização.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 com Flip -->
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <h3 class="font-bold text-2xl text-indigo-700">2. Entrevista de Escuta Especializada</h3>
+                            <p class="mt-4">Atividade de entrevista diferenciada e de <span class="font-semibold">excepcionalidade</span>, realizada apenas quando há suspeita de violência.</p>
+                        </div>
+                         <div class="flip-card-back">
+                            <ul class="space-y-3 text-left list-disc list-inside">
+                                <li><span class="font-semibold">Quem realiza?</span> Apenas um profissional capacitado da rede.</li>
+                                <li><span class="font-semibold">Quando?</span> Quando há suspeita de violência não revelada espontaneamente.</li>
+                                <li><span class="font-semibold">Objetivo:</span> Coletar elementos estritamente necessários para o planejamento das medidas de proteção.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção Fluxograma -->
+        <section id="fluxograma" class="mb-20 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-center mb-10 text-gray-800">Fluxograma da Escuta Especializada (SMS)</h2>
+            <div class="bg-gray-100 p-4 sm:p-8 rounded-xl shadow-inner">
+                <img src="https://i.imgur.com/UTSynRc.png" alt="Fluxograma da Escuta Especializada da SMS de Florianópolis" class="mx-auto rounded-lg shadow-md">
+            </div>
+        </section>
+
+        <!-- Seção Passo a Passo -->
+        <section id="passo-a-passo" class="mb-20 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-center mb-10 text-gray-800">Passo a Passo do Atendimento</h2>
+            <div class="space-y-4" id="accordion-container">
+                <!-- Acordeão Item 1 -->
+                <div class="bg-white rounded-lg shadow-md">
+                    <button class="accordion-header w-full flex justify-between items-center text-left p-6">
+                        <span class="text-xl font-semibold text-blue-800">1. Acolhida</span>
+                        <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                        <div class="p-6 pt-0">
+                            <ul class="list-disc list-inside space-y-2">
+                                <li>Receber crianças, adolescentes e famílias de forma empática, respeitosa e humanizada, preferencialmente em local privativo.</li>
+                                <li>Valorizar as informações relatadas, evitando julgamentos, censuras ou outras ações que causem revitimização.</li>
+                                <li>Adotar atitudes positivas e de proteção.</li>
+                                <li>Acompanhar o caso e proceder aos encaminhamentos necessários.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- Acordeão Item 2 -->
+                 <div class="bg-white rounded-lg shadow-md">
+                    <button class="accordion-header w-full flex justify-between items-center text-left p-6">
+                        <span class="text-xl font-semibold text-blue-800">2. Atendimentos</span>
+                        <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                        <div class="p-6 pt-0">
+                            <ul class="list-disc list-inside space-y-2">
+                                <li>Realizar consulta clínica (anamnese, exame físico) e planejar a conduta.</li>
+                                <li>Para violência sexual ocorrida há menos de 72h, seguir o Protocolo RAIVS.</li>
+                                <li>Garantir acompanhamento pela Atenção Primária e equipes multiprofissionais.</li>
+                                <li>Articular com CAPSi, CRAS, CREAS e outros serviços da rede conforme a necessidade.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- Acordeão Item 3 -->
+                 <div class="bg-white rounded-lg shadow-md">
+                    <button class="accordion-header w-full flex justify-between items-center text-left p-6">
+                        <span class="text-xl font-semibold text-blue-800">3. Notificação Compulsória (SINAN)</span>
+                        <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                        <div class="p-6 pt-0">
+                            <p class="mb-4">É <span class="font-bold">imprescindível</span> que a equipe de saúde realize a notificação no SINAN, mesmo em casos de suspeita. Não é obrigatória a apresentação de Boletim de Ocorrência (BO) para o atendimento.</p>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li>Preencher a Ficha de Notificação/Investigação Individual de Violência Interpessoal/Autoprovocada de forma completa.</li>
+                                <li>Encaminhar à Gerência de Vigilância Epidemiológica em até 24h.</li>
+                            </ul>
+                            <div class="mt-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-r-lg" role="alert">
+                                <p class="font-bold">Atenção!</p>
+                                <p>A ficha do SINAN e o prontuário médico NUNCA devem ser usados como comunicação à polícia, sob risco de responsabilização.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Acordeão Item 4 -->
+                 <div class="bg-white rounded-lg shadow-md">
+                    <button class="accordion-header w-full flex justify-between items-center text-left p-6">
+                        <span class="text-xl font-semibold text-blue-800">4. Entrevista de Escuta Especializada (Excepcional)</span>
+                        <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                        <div class="p-6 pt-0">
+                             <ol class="list-decimal list-inside space-y-2">
+                                <li>Encaminhar via CELK como "SMS Consulta em Pediatria", justificando que é para Entrevista de Escuta Especializada. Anotar o número gerado.</li>
+                                <li>Com o número do encaminhamento, entrar em contato com a Gerência de Integração Assistencial (GIA) pelo telefone 3239-1542.</li>
+                                <li>A GIA acompanhará a regulação e informará o pediatra responsável.</li>
+                                <li>A equipe que atendeu o caso deve enviar o formulário de registro via CELK (em particular) para o pediatra antes do atendimento.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                <!-- Acordeão Item 5 -->
+                 <div class="bg-white rounded-lg shadow-md">
+                    <button class="accordion-header w-full flex justify-between items-center text-left p-6">
+                        <span class="text-xl font-semibold text-blue-800">5. Seguimento na Rede de Cuidado e Proteção</span>
+                        <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+                        <div class="p-6 pt-0">
+                            <ul class="list-disc list-inside space-y-2">
+                                <li>Acompanhar a criança/adolescente e sua família até a alta, com planejamento individualizado.</li>
+                                <li>Acionar a rede de cuidado e proteção do território: Atenção Primária, CRAS, CREAS, Escolas, Conselho Tutelar, Ministério Público, etc.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção Quiz -->
+        <section id="quiz" class="mb-20 scroll-mt-24">
+            <h2 class="text-3xl font-bold text-center mb-10 text-gray-800">Quiz Interativo: Teste seu Conhecimento</h2>
+            <div id="quiz-container" class="bg-white p-8 rounded-xl shadow-lg max-w-4xl mx-auto">
+                <div id="quiz-start-screen">
+                    <p class="text-center text-lg mb-6">Teste seus conhecimentos sobre o Protocolo de Escuta Especializada com 10 perguntas.</p>
+                    <button id="start-quiz-btn" class="w-full bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition text-lg font-semibold">Iniciar Quiz</button>
+                </div>
+                <div id="quiz-question-screen" class="hidden">
+                    <div id="question-header" class="text-right text-gray-600 font-semibold mb-4"></div>
+                    <h3 id="question-text" class="text-xl font-semibold mb-6"></h3>
+                    <div id="options-container" class="flex flex-col"></div>
+                    <button id="next-question-btn" class="w-full mt-6 bg-gray-700 text-white px-6 py-3 rounded-md hover:bg-gray-800 transition text-lg font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>Próxima Pergunta</button>
+                </div>
+                <div id="quiz-results-screen" class="hidden">
+                    <h3 class="text-2xl font-bold text-center mb-4">Quiz Finalizado!</h3>
+                    <p id="score-text" class="text-center text-xl mb-6"></p>
+                    <div id="feedback-container" class="space-y-4"></div>
+                    <button id="restart-quiz-btn" class="w-full mt-8 bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition text-lg font-semibold">Tentar Novamente</button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Seção Recursos -->
+        <section id="recursos" class="scroll-mt-24">
+             <h2 class="text-3xl font-bold text-center mb-10 text-gray-800">Recursos e Links Úteis</h2>
+             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                 <a href="https://www.pmf.sc.gov.br/entidades/semas/index.php?cms=protocolo+escuta+especializada&menu=10&submenuid=2702" target="_blank" class="block bg-white p-6 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all">
+                    <h3 class="font-bold text-lg text-blue-700">Protocolo Completo e Formulários</h3>
+                    <p class="text-sm text-gray-600 mt-2">Acesse a página oficial da Secretaria da Assistência Social para baixar o protocolo e o formulário de registro.</p>
+                 </a>
+                 <a href="https://sites.google.com/sme.pmf.sc.gov.br/protocolodeescutaespecializada/in%C3%ADcio?authuser=0" target="_blank" class="block bg-white p-6 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all">
+                    <h3 class="font-bold text-lg text-blue-700">Site do Comitê Gestor</h3>
+                    <p class="text-sm text-gray-600 mt-2">Encontre materiais informativos, acesso a formações e capacitações realizadas pelo comitê.</p>
+                 </a>
+                 <a href="https://www.pmf.sc.gov.br/entidades/semas/index.php?cms=conselho+tutelar&menu=6&submenuid=219" target="_blank" class="block bg-white p-6 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all">
+                    <h3 class="font-bold text-lg text-blue-700">Contato dos Conselhos Tutelares</h3>
+                    <p class="text-sm text-gray-600 mt-2">Localize os contatos e endereços dos Conselhos Tutelares de Florianópolis.</p>
+                 </a>
+             </div>
+             
+             <!-- Vídeo Adicionado -->
+             <div class="mt-12">
+                <h3 class="text-2xl font-bold text-center mb-6 text-gray-800">Entendendo a Escuta Especializada</h3>
+                <div class="relative max-w-4xl mx-auto" style="padding-bottom: 56.25%;">
+                    <iframe class="absolute top-0 left-0 w-full h-full rounded-lg shadow-lg" src="https://www.youtube.com/embed/eITWAe1VGWU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-20">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>Este material foi criado pela Gerencia de Integração Assistencial em parceria com a Escola de Saúde Pública de Florianópolis.</p>
+            <p class="text-sm text-gray-400 mt-2">&copy; Prefeitura Municipal de Florianópolis</p>
+        </div>
+    </footer>
+
+    <script>
+        // Lógica para o menu mobile
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Lógica para abas
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        const activeTabClasses = ['border-blue-500', 'text-blue-600'];
+        const inactiveTabClasses = ['border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300'];
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.dataset.tab;
+
+                tabButtons.forEach(btn => {
+                    btn.classList.remove(...activeTabClasses);
+                    btn.classList.add(...inactiveTabClasses);
+                });
+
+                button.classList.add(...activeTabClasses);
+                button.classList.remove(...inactiveTabClasses);
+                
+                tabContents.forEach(content => {
+                    if (content.id === tabId) {
+                        content.classList.remove('hidden');
+                    } else {
+                        content.classList.add('hidden');
+                    }
+                });
+            });
+            
+            // Set initial state
+            if(button.classList.contains('active-tab')){
+                 button.classList.add(...activeTabClasses);
+                 button.classList.remove(...inactiveTabClasses);
+            } else {
+                 button.classList.remove(...activeTabClasses);
+                 button.classList.add(...inactiveTabClasses);
+            }
+        });
+
+
+        // Lógica para o acordeão
+        const accordionHeaders = document.querySelectorAll('.accordion-header');
+        accordionHeaders.forEach(header => {
+            header.addEventListener('click', () => {
+                const content = header.nextElementSibling;
+                const icon = header.querySelector('svg');
+
+                // Fecha todos os outros acordeões
+                document.querySelectorAll('.accordion-content').forEach(item => {
+                    if (item !== content) {
+                        item.style.maxHeight = '0px';
+                        item.previousElementSibling.querySelector('svg').classList.remove('rotate-180');
+                    }
+                });
+                
+                // Abre ou fecha o acordeão clicado
+                if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+                    content.style.maxHeight = '0px';
+                    icon.classList.remove('rotate-180');
+                } else {
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    icon.classList.add('rotate-180');
+                }
+            });
+        });
+        
+        // [START] Lógica do Quiz
+        const quizData = [
+            {
+                question: "Qual é a principal finalidade da Escuta Especializada, de acordo com o Decreto n° 9.603/2018?",
+                options: ["Produzir provas para um processo judicial.", "Garantir a proteção social e o provimento de cuidados à vítima.", "Responsabilizar criminalmente o agressor.", "Realizar uma investigação policial detalhada."],
+                answer: "Garantir a proteção social e o provimento de cuidados à vítima."
+            },
+            {
+                question: "Quem pode realizar o procedimento de 'Acolhida de Revelação'?",
+                options: ["Apenas psicólogos e assistentes sociais.", "Apenas profissionais da segurança pública.", "Qualquer profissional da rede de proteção (saúde, educação, etc.).", "Apenas conselheiros tutelares."],
+                answer: "Qualquer profissional da rede de proteção (saúde, educação, etc.)."
+            },
+            {
+                question: "A 'Entrevista de Escuta Especializada' é um procedimento de rotina?",
+                options: ["Sim, deve ser realizada em todos os atendimentos.", "Não, é uma atividade de excepcionalidade, realizada apenas sob suspeita de violência.", "Sim, é o primeiro passo de qualquer atendimento.", "Não, foi substituída pelo Depoimento Especial."],
+                answer: "Não, é uma atividade de excepcionalidade, realizada apenas sob suspeita de violência."
+            },
+            {
+                question: "Qual a principal diferença entre a Escuta Especializada e o Depoimento Especial?",
+                options: ["Não há diferença, são o mesmo procedimento com nomes diferentes.", "A Escuta Especializada visa produzir provas, e o Depoimento Especial visa a proteção.", "A Escuta Especializada é para proteção e cuidado, enquanto o Depoimento Especial é para a produção de provas perante autoridade policial/judiciária.", "A Escuta Especializada é realizada por juízes e o Depoimento Especial por profissionais de saúde."],
+                answer: "A Escuta Especializada é para proteção e cuidado, enquanto o Depoimento Especial é para a produção de provas perante autoridade policial/judiciária."
+            },
+            {
+                question: "É obrigatória a apresentação de um Boletim de Ocorrência (BO) para que a criança ou adolescente receba atendimento na rede de saúde?",
+                options: ["Sim, sem o BO o atendimento não pode ser iniciado.", "Não, o atendimento dispensa a apresentação do BO.", "Sim, mas apenas em casos de violência sexual.", "Apenas se a família desejar processar o agressor."],
+                answer: "Não, o atendimento dispensa a apresentação do BO."
+            },
+            {
+                question: "A notificação da violência no SINAN deve ser feita:",
+                options: ["Apenas após a confirmação da violência com provas concretas.", "Apenas se a família autorizar.", "Sempre que houver suspeita ou confirmação de violência.", "Apenas em casos de violência física grave."],
+                answer: "Sempre que houver suspeita ou confirmação de violência."
+            },
+            {
+                question: "Em casos de suspeita de violência sexual ocorrida há menos de 72 horas, qual protocolo deve ser seguido?",
+                options: ["Protocolo de atendimento de puericultura.", "Protocolo RAIVS.", "Protocolo de Diagnóstico e Tratamento de ISTs", "Protocolo de Registro de Boletim de Ocorrência"],
+                answer: "Protocolo RAIVS."
+            },
+            {
+                question: "A Ficha de Notificação do SINAN pode ser enviada para a autoridade policial como um documento de comunicação do caso?",
+                options: ["Sim, é o principal documento para iniciar a investigação.", "Não, a ficha do SINAN e o prontuário não devem ser usados para essa finalidade.", "Sim, mas apenas com autorização judicial.", "Apenas em casos onde não há familiar protetivo."],
+                answer: "Não, a ficha do SINAN e o prontuário não devem ser usados para essa finalidade."
+            },
+            {
+                question: "Quando o Conselho Tutelar deve ser comunicado sobre um caso de violência contra criança ou adolescente?",
+                options: ["Apenas se a criança ou adolescente solicitar.", "Em todos os casos, sendo de forma imediata em situações emergenciais.", "Apenas após a conclusão do tratamento de saúde.", "Somente se a família não tomar nenhuma providência."],
+                answer: "Em todos os casos, sendo de forma imediata em situações emergenciais."
+            },
+            {
+                question: "O que deve ser feito se houver sinais evidentes de gravidade, como gravidez decorrente de violência?",
+                options: ["Aguardar a consulta com o especialista.", "Comunicar apenas o Conselho Tutelar.", "Acionar imediatamente a Segurança Pública.", "Realizar apenas a notificação no SINAN."],
+                answer: "Acionar imediatamente a Segurança Pública."
+            }
+        ];
+
+        const quizStartScreen = document.getElementById('quiz-start-screen');
+        const quizQuestionScreen = document.getElementById('quiz-question-screen');
+        const quizResultsScreen = document.getElementById('quiz-results-screen');
+        
+        const startQuizBtn = document.getElementById('start-quiz-btn');
+        const nextQuestionBtn = document.getElementById('next-question-btn');
+        const restartQuizBtn = document.getElementById('restart-quiz-btn');
+
+        const questionHeader = document.getElementById('question-header');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const scoreText = document.getElementById('score-text');
+        const feedbackContainer = document.getElementById('feedback-container');
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+
+        function startQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            quizStartScreen.classList.add('hidden');
+            quizResultsScreen.classList.add('hidden');
+            quizQuestionScreen.classList.remove('hidden');
+            nextQuestionBtn.innerText = 'Próxima Pergunta';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            resetState();
+            const currentQuestion = quizData[currentQuestionIndex];
+            questionHeader.innerText = `Pergunta ${currentQuestionIndex + 1} de ${quizData.length}`;
+            questionText.innerText = currentQuestion.question;
+
+            currentQuestion.options.forEach((option, index) => {
+                const letter = String.fromCharCode(97 + index); // a, b, c, d
+                const button = document.createElement('button');
+                button.innerText = `${letter}) ${option}`;
+                button.dataset.originalText = option; // Store original text
+                button.classList.add('quiz-option');
+                button.addEventListener('click', () => selectOption(button));
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function resetState() {
+            nextQuestionBtn.disabled = true;
+            while (optionsContainer.firstChild) {
+                optionsContainer.removeChild(optionsContainer.firstChild);
+            }
+        }
+        
+        function selectOption(button) {
+            if (optionsContainer.querySelector('.correct') || optionsContainer.querySelector('.incorrect')) {
+                return;
+            }
+
+            const selectedText = button.dataset.originalText;
+            userAnswers[currentQuestionIndex] = selectedText;
+
+            const currentQuestion = quizData[currentQuestionIndex];
+            const correctAnswer = currentQuestion.answer;
+            
+            const isCorrect = (selectedText === correctAnswer);
+            if (isCorrect) {
+                score++;
+            }
+
+            const allOptions = optionsContainer.querySelectorAll('.quiz-option');
+            allOptions.forEach(optBtn => {
+                optBtn.disabled = true;
+                if (optBtn.dataset.originalText === correctAnswer) {
+                    optBtn.classList.add('correct');
+                } else if (optBtn === button) {
+                    optBtn.classList.add('incorrect');
+                }
+            });
+            
+            if (currentQuestionIndex === quizData.length - 1) {
+                nextQuestionBtn.innerText = 'Ver Resultados';
+            }
+
+            nextQuestionBtn.disabled = false;
+        }
+
+        function showNextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                showQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            quizQuestionScreen.classList.add('hidden');
+            quizResultsScreen.classList.remove('hidden');
+
+            const percentage = Math.round((score / quizData.length) * 100);
+            let resultMessage = '';
+            if (percentage === 100) {
+                resultMessage = 'Excelente! Você acertou todas as perguntas!';
+            } else if (percentage >= 70) {
+                resultMessage = 'Muito bem! Ótimo resultado.';
+            } else if (percentage >= 50) {
+                resultMessage = 'Bom trabalho! Continue estudando para aprimorar.';
+            } else {
+                resultMessage = 'Não desanime! Reveja os pontos e tente novamente.';
+            }
+
+            scoreText.innerHTML = `
+                <div class="text-2xl mb-2">Você acertou <span class="font-bold text-blue-600">${score}</span> de ${quizData.length} (${percentage}%)</div>
+                <div class="text-lg text-gray-600">${resultMessage}</div>
+            `;
+
+            feedbackContainer.innerHTML = '';
+            quizData.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer === question.answer;
+
+                const userAnswerIndex = question.options.indexOf(userAnswer);
+                const userAnswerLetter = userAnswerIndex >= 0 ? String.fromCharCode(97 + userAnswerIndex) : '';
+
+                const correctAnswerIndex = question.options.indexOf(question.answer);
+                const correctAnswerLetter = String.fromCharCode(97 + correctAnswerIndex);
+
+
+                const feedbackElement = document.createElement('div');
+                feedbackElement.classList.add('p-4', 'rounded-lg', 'border', isCorrect ? 'bg-green-50' : 'bg-red-50', isCorrect ? 'border-green-200' : 'border-red-200');
+                feedbackElement.innerHTML = `
+                    <p class="font-bold text-gray-800">${index + 1}. ${question.question}</p>
+                    <p class="mt-2 ${isCorrect ? 'text-green-800' : 'text-red-800'}"><span class="font-semibold">Sua resposta:</span> ${userAnswer ? `${userAnswerLetter}) ${userAnswer}` : 'Não respondida'}</p>
+                    ${!isCorrect ? `<p class="mt-1 text-gray-700"><span class="font-semibold">Resposta correta:</span> ${correctAnswerLetter}) ${question.answer}</p>` : ''}
+                `;
+                feedbackContainer.appendChild(feedbackElement);
+            });
+        }
+
+        startQuizBtn.addEventListener('click', startQuiz);
+        nextQuestionBtn.addEventListener('click', showNextQuestion);
+        restartQuizBtn.addEventListener('click', startQuiz);
+        // [END] Lógica do Quiz
+
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
