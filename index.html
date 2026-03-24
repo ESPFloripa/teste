@@ -1,648 +1,677 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth">
+<html lang="pt-BR">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NM7WVL5NK7"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-NM7WVL5NK7');
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Capacitação em Escuta Especializada | SMS Florianópolis</title>
+    <title>Módulos: Cuidar, Proteger e Conviver</title>
+    
+    <!-- React e ReactDOM via CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel para processar JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Estilos de animação personalizados -->
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        /* [START] New Card Flip Styles */
-        .flip-card {
-            background-color: transparent;
-            perspective: 1000px;
+        .animate-fade-in-up {
+            animation: fadeIn 0.8s ease-out forwards;
         }
-        .flip-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
+        @keyframes bounceSlow {
+            0%, 100% { transform: translateY(-5%); }
+            50% { transform: translateY(5%); }
         }
-        .flip-card:hover .flip-card-inner {
-            transform: rotateY(180deg);
-        }
-        .flip-card-front, .flip-card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 1.5rem;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-        }
-        .flip-card-front {
-            background-color: white;
-        }
-        .flip-card-back {
-            background-color: #f8fafc; /* bg-slate-50 */
-            transform: rotateY(180deg);
-            padding: 2rem;
-        }
-        /* [END] New Card Flip Styles */
-        .flow-box {
-            @apply bg-white p-4 rounded-lg shadow-md text-center border-2 border-gray-200 transition-transform duration-300 hover:scale-105 hover:shadow-xl;
-        }
-        .flow-arrow {
-            @apply text-3xl text-gray-400 my-2;
-        }
-        /* Estilos para o Quiz */
-        .quiz-option {
-            @apply block w-full text-left p-4 my-2 border-2 border-gray-200 rounded-lg cursor-pointer transition-colors duration-300;
-        }
-        .quiz-option:hover:not(:disabled) {
-            @apply bg-gray-100;
-        }
-        /* FIX: Using direct CSS for feedback styles to ensure they are applied correctly */
-        .quiz-option.correct {
-            background-color: #dcfce7; /* Tailwind green-100 */
-            border-color: #22c55e; /* Tailwind green-500 */
-            color: #166534; /* Tailwind green-800 */
-            font-weight: 600; /* Tailwind font-semibold */
-        }
-        .quiz-option.incorrect {
-            background-color: #fee2e2; /* Tailwind red-100 */
-            border-color: #ef4444; /* Tailwind red-500 */
-            color: #991b1b; /* Tailwind red-800 */
-            font-weight: 600; /* Tailwind font-semibold */
-        }
-        .quiz-option:disabled {
-            @apply cursor-not-allowed opacity-70;
+        .animate-bounce-slow {
+            animation: bounceSlow 3s infinite ease-in-out;
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-gray-50 text-gray-800 antialiased">
+    <div id="root"></div>
 
-    <!-- Header e Navegação -->
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="text-2xl font-bold text-blue-800">
-                <a href="#">Escuta Especializada</a>
-            </div>
-            <div class="hidden md:flex space-x-6 items-center">
-                <a href="#protocolo" class="text-gray-600 hover:text-blue-600 transition">O Protocolo</a>
-                <a href="#procedimentos" class="text-gray-600 hover:text-blue-600 transition">Procedimentos</a>
-                <a href="#fluxograma" class="text-gray-600 hover:text-blue-600 transition">Fluxograma</a>
-                <a href="#passo-a-passo" class="text-gray-600 hover:text-blue-600 transition">Passo a Passo</a>
-                <a href="#quiz" class="text-gray-600 hover:text-blue-600 transition">Quiz</a>
-                <a href="#recursos" class="text-gray-600 hover:text-blue-600 transition">Recursos</a>
-            </div>
-            <button id="mobile-menu-button" class="md:hidden">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- CONFIGURAÇÃO ---
+        const EMAIL_DESTINO = "email@exemplo.com"; 
+
+        // --- ÍCONES ---
+        const Play = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        );
+        const CheckCircle = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        );
+        const XCircle = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+        );
+        const ArrowRight = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+        );
+        const BookOpen = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+        );
+        const Star = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        );
+        const RefreshCw = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+        );
+        const Trophy = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M8 21h8a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v1a2 2 0 0 0 2 2z"></path><path d="M16 4h3a2 2 0 0 1 2 2v1a5 5 0 0 1-5 5h-4a5 5 0 0 1-5-5V6a2 2 0 0 1 2-2h3"></path><line x1="12" y1="15" x2="12" y2="18"></line></svg>
+        );
+        const Heart = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        );
+        const Info = ({ size = 24, className = "" }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        );
+
+        // --- COMPONENTES VISUAIS ---
+
+        const Button = ({ onClick, children, variant = "primary", className = "", disabled = false }) => {
+          const baseStyle = "px-6 py-3 rounded-full font-bold transition-all duration-300 shadow-md flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed";
+          const variants = {
+            primary: "bg-teal-600 hover:bg-teal-700 text-white hover:scale-105",
+            secondary: "bg-white text-teal-700 border-2 border-teal-600 hover:bg-teal-50",
+            success: "bg-green-500 hover:bg-green-600 text-white",
+            outline: "border-2 border-white text-white hover:bg-white hover:text-purple-900"
+          };
+
+          return (
+            <button onClick={onClick} disabled={disabled} className={`${baseStyle} ${variants[variant]} ${className}`}>
+              {children}
             </button>
-        </nav>
-        <!-- Menu Mobile -->
-        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
-            <a href="#protocolo" class="block py-2 text-gray-600 hover:text-blue-600 transition">O Protocolo</a>
-            <a href="#procedimentos" class="block py-2 text-gray-600 hover:text-blue-600 transition">Procedimentos</a>
-            <a href="#fluxograma" class="block py-2 text-gray-600 hover:text-blue-600 transition">Fluxograma</a>
-            <a href="#passo-a-passo" class="block py-2 text-gray-600 hover:text-blue-600 transition">Passo a Passo</a>
-            <a href="#quiz" class="block py-2 text-gray-600 hover:text-blue-600 transition">Quiz</a>
-            <a href="#recursos" class="block py-2 text-gray-600 hover:text-blue-600 transition">Recursos</a>
-        </div>
-    </header>
+          );
+        };
 
-    <main class="container mx-auto px-6 py-12">
+        const Footer = ({ className = "" }) => {
+          const [showDisclaimer, setShowDisclaimer] = useState(false);
+          const [zoomedImage, setZoomedImage] = useState(null);
+          const disclaimerRef = useRef(null);
 
-        <!-- Seção Hero -->
-        <section class="bg-gray-800 text-center mb-20 py-20 px-6 rounded-xl shadow-lg">
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Capacitação para Equipes de Saúde</h1>
-            <p class="text-lg text-gray-300 max-w-3xl mx-auto">Um guia prático e rápido para a aplicação do Protocolo de Escuta Especializada de Florianópolis na proteção de crianças e adolescentes.</p>
-        </section>
+          useEffect(() => {
+            const handleClickOutside = (event) => {
+              if (showDisclaimer && disclaimerRef.current && !disclaimerRef.current.contains(event.target)) {
+                setShowDisclaimer(false);
+              }
+            };
+            document.addEventListener("mousedown", handleClickOutside);
+            return () => document.removeEventListener("mousedown", handleClickOutside);
+          }, [showDisclaimer]);
 
-        <!-- Seção O Protocolo -->
-        <section id="protocolo" class="mb-20 scroll-mt-24">
-            <h2 class="text-3xl font-bold text-center mb-10 text-gray-800">O que é o Protocolo de Escuta Especializada?</h2>
-            <div class="bg-white p-8 rounded-xl shadow-lg">
-                <p class="mb-4 text-center max-w-4xl mx-auto">O Protocolo de Florianópolis, em conformidade com a <span class="font-semibold">Lei n° 13.431/2017</span> e o <span class="font-semibold">Decreto n° 9.603/2018</span>, normatiza os procedimentos para o atendimento de crianças e adolescentes em situação ou testemunhas de violência. Seu objetivo é garantir uma intervenção segura, respeitosa e eficaz, minimizando a revitimização e articulando as políticas públicas de proteção.</p>
-                
-                <p class="text-center font-semibold text-lg my-6 text-gray-800">Importante Diferenciar:</p>
-                
-                <!-- Abas Interativas -->
-                <div>
-                    <div class="border-b border-gray-200">
-                        <nav class="-mb-px flex justify-center space-x-4 md:space-x-8" aria-label="Tabs">
-                            <button class="tab-button active-tab group inline-flex items-center py-4 px-1 border-b-2 font-medium text-lg" data-tab="escuta-especializada">
-                                <svg class="w-6 h-6 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a2 2 0 01-2-2V7a2 2 0 012-2h4l4 4z"></path></svg>
-                                Escuta Especializada
-                            </button>
-                            <button class="tab-button group inline-flex items-center py-4 px-1 border-b-2 font-medium text-lg" data-tab="depoimento-especial">
-                               <svg class="w-6 h-6 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                Depoimento Especial
-                            </button>
-                        </nav>
-                    </div>
-                    <div class="mt-8">
-                        <div id="escuta-especializada" class="tab-content">
-                             <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-lg">
-                                <h3 class="font-bold text-xl mb-2 text-blue-800">Finalidade Principal: Proteção e Cuidado</h3>
-                                <p>Procedimento realizado pela rede de proteção (saúde, educação, assistência social) com o objetivo de <span class="font-semibold">garantir proteção social e prover cuidados</span>. Limita-se ao estritamente necessário para essa finalidade e não tem como objetivo produzir provas para investigação.</p>
-                            </div>
+          const LogoImage = ({ src, alt }) => (
+            <img 
+              src={src} 
+              alt={alt} 
+              onClick={() => setZoomedImage(src)}
+              className="w-14 h-14 md:w-16 md:h-16 object-contain bg-white rounded-lg p-1 cursor-pointer hover:scale-110 transition-transform duration-200" 
+              title="Clique para ampliar"
+            />
+          );
+
+          return (
+            <footer className={`w-full py-2 px-4 ${className}`}>
+              {zoomedImage && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in-up" onClick={() => setZoomedImage(null)}>
+                  <img src={zoomedImage} alt="Logo Ampliada" className="w-56 h-56 md:w-64 md:h-64 object-contain bg-white rounded-xl p-2 shadow-2xl cursor-zoom-out transform transition-all duration-300"/>
+                </div>
+              )}
+
+              <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+                  <div className="flex gap-4 order-2 md:order-1">
+                      <LogoImage src="https://i.imgur.com/cdlakCV.png" alt="Logo Institucional Esquerda 1" />
+                      <LogoImage src="https://i.imgur.com/47Tvp48.png" alt="Logo Institucional Esquerda 2" />
+                  </div>
+
+                  <div ref={disclaimerRef} className="text-center text-xs md:text-sm order-1 md:order-2 flex-grow mx-4 flex flex-col items-center relative">
+                      <p>Curso Educativo para Adolescentes desenvolvido para o Programa Saúde na Escola do Município de Florianópolis.</p>
+                      <p className="mt-1">Sara Volpato Gominho (CRP 12-05754) - PSE/Gerência de Integração Assistencial.</p>
+                      <button 
+                        onClick={() => setShowDisclaimer(!showDisclaimer)}
+                        className="mt-1 hover:underline focus:outline-none cursor-pointer text-inherit bg-transparent border-none p-0 font-medium underline decoration-dotted underline-offset-2"
+                        title="Clique para ver informações de direitos autorais"
+                      >
+                        © Prefeitura Municipal de Florianópolis - Secretaria Municipal de Saúde.
+                      </button>
+
+                      {showDisclaimer && (
+                        <div className="absolute bottom-full mb-3 p-4 bg-gray-900/95 backdrop-blur text-white text-xs rounded-xl border border-gray-600 shadow-2xl animate-fade-in-up w-max max-w-[90vw] md:max-w-md z-50">
+                          <p className="leading-relaxed">Este conteúdo não pode ser reproduzido parcial ou totalmente sem a autorização da Secretaria Municipal de Saúde de Florianópolis, para contato enviar e-mail para <a href="mailto:pse.floripa@gmail.com" className="text-teal-300 hover:text-teal-100 underline font-bold">pse.floripa@gmail.com</a>.</p>
+                          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-gray-900 border-b border-r border-gray-600 transform rotate-45"></div>
                         </div>
-                        <div id="depoimento-especial" class="tab-content hidden">
-                            <div class="bg-orange-50 border-l-4 border-orange-500 p-6 rounded-r-lg">
-                                <h3 class="font-bold text-xl mb-2 text-orange-800">Finalidade Principal: Produção de Provas</h3>
-                                <p>Procedimento de oitiva da criança ou adolescente perante <span class="font-semibold">autoridade policial ou judiciária</span>. Tem como finalidade a <span class="font-semibold">produção de provas</span> para o processo de investigação e responsabilização.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+                      )}
+                  </div>
 
-        <!-- Seção Procedimentos -->
-        <section id="procedimentos" class="mb-20 scroll-mt-24">
-            <h2 class="text-3xl font-bold text-center mb-10 text-gray-800">Procedimentos Apresentados pelo Protocolo</h2>
-            <p class="text-center text-gray-600 mb-10 -mt-6">Passe o mouse sobre os cards para ver os detalhes.</p>
-            <div class="grid md:grid-cols-2 gap-8 h-[22rem]">
-                
-                <!-- Card 1 com Flip -->
-                <div class="flip-card">
-                    <div class="flip-card-inner">
-                        <div class="flip-card-front">
-                            <h3 class="font-bold text-2xl text-teal-700">1. Acolhida de Revelação</h3>
-                            <p class="mt-4">Ocorre de forma espontânea, quando a criança ou adolescente demonstra sinais ou revela a violência.</p>
-                        </div>
-                        <div class="flip-card-back">
-                            <ul class="space-y-3 text-left list-disc list-inside">
-                                <li><span class="font-semibold">Quem realiza?</span> Qualquer profissional da rede.</li>
-                                <li><span class="font-semibold">Como?</span> Com postura ética, empática e sem julgamentos.</li>
-                                <li><span class="font-semibold">Ação principal:</span> Registrar a informação de forma fidedigna e compartilhá-la na rede de proteção para evitar revitimização.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                  <div className="flex gap-4 order-3">
+                      <LogoImage src="https://i.imgur.com/ErJy5nX.png" alt="Logo Institucional Direita 1" />
+                      <LogoImage src="https://i.imgur.com/9bbH5Ek.png" alt="Logo Institucional Direita 2" />
+                  </div>
+              </div>
+            </footer>
+          );
+        };
 
-                <!-- Card 2 com Flip -->
-                <div class="flip-card">
-                    <div class="flip-card-inner">
-                        <div class="flip-card-front">
-                            <h3 class="font-bold text-2xl text-indigo-700">2. Entrevista de Escuta Especializada</h3>
-                            <p class="mt-4">Atividade de entrevista diferenciada e de <span class="font-semibold">excepcionalidade</span>, realizada apenas quando há suspeita de violência.</p>
-                        </div>
-                         <div class="flip-card-back">
-                            <ul class="space-y-3 text-left list-disc list-inside">
-                                <li><span class="font-semibold">Quem realiza?</span> Apenas um profissional capacitado da rede.</li>
-                                <li><span class="font-semibold">Quando?</span> Quando há suspeita de violência não revelada espontaneamente.</li>
-                                <li><span class="font-semibold">Objetivo:</span> Coletar elementos estritamente necessários para o planejamento das medidas de proteção.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Seção Fluxograma -->
-        <section id="fluxograma" class="mb-20 scroll-mt-24">
-            <h2 class="text-3xl font-bold text-center mb-10 text-gray-800">Fluxograma da Escuta Especializada (SMS)</h2>
-            <div class="bg-gray-100 p-4 sm:p-8 rounded-xl shadow-inner">
-                <img src="https://i.imgur.com/UTSynRc.png" alt="Fluxograma da Escuta Especializada da SMS de Florianópolis" class="mx-auto rounded-lg shadow-md">
-            </div>
-        </section>
-
-        <!-- Seção Passo a Passo -->
-        <section id="passo-a-passo" class="mb-20 scroll-mt-24">
-            <h2 class="text-3xl font-bold text-center mb-10 text-gray-800">Passo a Passo do Atendimento</h2>
-            <div class="space-y-4" id="accordion-container">
-                <!-- Acordeão Item 1 -->
-                <div class="bg-white rounded-lg shadow-md">
-                    <button class="accordion-header w-full flex justify-between items-center text-left p-6">
-                        <span class="text-xl font-semibold text-blue-800">1. Acolhida</span>
-                        <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                        <div class="p-6 pt-0">
-                            <ul class="list-disc list-inside space-y-2">
-                                <li>Receber crianças, adolescentes e famílias de forma empática, respeitosa e humanizada, preferencialmente em local privativo.</li>
-                                <li>Valorizar as informações relatadas, evitando julgamentos, censuras ou outras ações que causem revitimização.</li>
-                                <li>Adotar atitudes positivas e de proteção.</li>
-                                <li>Acompanhar o caso e proceder aos encaminhamentos necessários.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <!-- Acordeão Item 2 -->
-                 <div class="bg-white rounded-lg shadow-md">
-                    <button class="accordion-header w-full flex justify-between items-center text-left p-6">
-                        <span class="text-xl font-semibold text-blue-800">2. Atendimentos</span>
-                        <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                        <div class="p-6 pt-0">
-                            <ul class="list-disc list-inside space-y-2">
-                                <li>Realizar consulta clínica (anamnese, exame físico) e planejar a conduta.</li>
-                                <li>Para violência sexual ocorrida há menos de 72h, seguir o Protocolo RAIVS.</li>
-                                <li>Garantir acompanhamento pela Atenção Primária e equipes multiprofissionais.</li>
-                                <li>Articular com CAPSi, CRAS, CREAS e outros serviços da rede conforme a necessidade.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <!-- Acordeão Item 3 -->
-                 <div class="bg-white rounded-lg shadow-md">
-                    <button class="accordion-header w-full flex justify-between items-center text-left p-6">
-                        <span class="text-xl font-semibold text-blue-800">3. Notificação Compulsória (SINAN)</span>
-                        <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                        <div class="p-6 pt-0">
-                            <p class="mb-4">É <span class="font-bold">imprescindível</span> que a equipe de saúde realize a notificação no SINAN, mesmo em casos de suspeita. Não é obrigatória a apresentação de Boletim de Ocorrência (BO) para o atendimento.</p>
-                            <ul class="list-disc list-inside space-y-2">
-                                <li>Preencher a Ficha de Notificação/Investigação Individual de Violência Interpessoal/Autoprovocada de forma completa.</li>
-                                <li>Encaminhar à Gerência de Vigilância Epidemiológica em até 24h.</li>
-                            </ul>
-                            <div class="mt-4 bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-r-lg" role="alert">
-                                <p class="font-bold">Atenção!</p>
-                                <p>A ficha do SINAN e o prontuário médico NUNCA devem ser usados como comunicação à polícia, sob risco de responsabilização.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Acordeão Item 4 -->
-                 <div class="bg-white rounded-lg shadow-md">
-                    <button class="accordion-header w-full flex justify-between items-center text-left p-6">
-                        <span class="text-xl font-semibold text-blue-800">4. Entrevista de Escuta Especializada (Excepcional)</span>
-                        <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                        <div class="p-6 pt-0">
-                             <ol class="list-decimal list-inside space-y-2">
-                                <li>Encaminhar via CELK como "SMS Consulta em Pediatria", justificando que é para Entrevista de Escuta Especializada. Anotar o número gerado.</li>
-                                <li>Com o número do encaminhamento, entrar em contato com a Gerência de Integração Assistencial (GIA) pelo telefone 3239-1542.</li>
-                                <li>A GIA acompanhará a regulação e informará o pediatra responsável.</li>
-                                <li>A equipe que atendeu o caso deve enviar o formulário de registro via CELK (em particular) para o pediatra antes do atendimento.</li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-                <!-- Acordeão Item 5 -->
-                 <div class="bg-white rounded-lg shadow-md">
-                    <button class="accordion-header w-full flex justify-between items-center text-left p-6">
-                        <span class="text-xl font-semibold text-blue-800">5. Seguimento na Rede de Cuidado e Proteção</span>
-                        <svg class="w-6 h-6 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div class="accordion-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
-                        <div class="p-6 pt-0">
-                            <ul class="list-disc list-inside space-y-2">
-                                <li>Acompanhar a criança/adolescente e sua família até a alta, com planejamento individualizado.</li>
-                                <li>Acionar a rede de cuidado e proteção do território: Atenção Primária, CRAS, CREAS, Escolas, Conselho Tutelar, Ministério Público, etc.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Seção Quiz -->
-        <section id="quiz" class="mb-20 scroll-mt-24">
-            <h2 class="text-3xl font-bold text-center mb-10 text-gray-800">Quiz Interativo: Teste seu Conhecimento</h2>
-            <div id="quiz-container" class="bg-white p-8 rounded-xl shadow-lg max-w-4xl mx-auto">
-                <div id="quiz-start-screen">
-                    <p class="text-center text-lg mb-6">Teste seus conhecimentos sobre o Protocolo de Escuta Especializada com 10 perguntas.</p>
-                    <button id="start-quiz-btn" class="w-full bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition text-lg font-semibold">Iniciar Quiz</button>
-                </div>
-                <div id="quiz-question-screen" class="hidden">
-                    <div id="question-header" class="text-right text-gray-600 font-semibold mb-4"></div>
-                    <h3 id="question-text" class="text-xl font-semibold mb-6"></h3>
-                    <div id="options-container" class="flex flex-col"></div>
-                    <button id="next-question-btn" class="w-full mt-6 bg-gray-700 text-white px-6 py-3 rounded-md hover:bg-gray-800 transition text-lg font-semibold disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>Próxima Pergunta</button>
-                </div>
-                <div id="quiz-results-screen" class="hidden">
-                    <h3 class="text-2xl font-bold text-center mb-4">Quiz Finalizado!</h3>
-                    <p id="score-text" class="text-center text-xl mb-6"></p>
-                    <div id="feedback-container" class="space-y-4"></div>
-                    <button id="restart-quiz-btn" class="w-full mt-8 bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition text-lg font-semibold">Tentar Novamente</button>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Seção Recursos -->
-        <section id="recursos" class="scroll-mt-24">
-             <h2 class="text-3xl font-bold text-center mb-10 text-gray-800">Recursos e Links Úteis</h2>
-             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                 <a href="https://www.pmf.sc.gov.br/entidades/semas/index.php?cms=protocolo+escuta+especializada&menu=10&submenuid=2702" target="_blank" class="block bg-white p-6 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all">
-                    <h3 class="font-bold text-lg text-blue-700">Protocolo Completo e Formulários</h3>
-                    <p class="text-sm text-gray-600 mt-2">Acesse a página oficial da Secretaria da Assistência Social para baixar o protocolo e o formulário de registro.</p>
-                 </a>
-                 <a href="https://sites.google.com/sme.pmf.sc.gov.br/protocolodeescutaespecializada/in%C3%ADcio?authuser=0" target="_blank" class="block bg-white p-6 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all">
-                    <h3 class="font-bold text-lg text-blue-700">Site do Comitê Gestor</h3>
-                    <p class="text-sm text-gray-600 mt-2">Encontre materiais informativos, acesso a formações e capacitações realizadas pelo comitê.</p>
-                 </a>
-                 <a href="https://www.pmf.sc.gov.br/entidades/semas/index.php?cms=conselho+tutelar&menu=6&submenuid=219" target="_blank" class="block bg-white p-6 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all">
-                    <h3 class="font-bold text-lg text-blue-700">Contato dos Conselhos Tutelares</h3>
-                    <p class="text-sm text-gray-600 mt-2">Localize os contatos e endereços dos Conselhos Tutelares de Florianópolis.</p>
-                 </a>
-             </div>
-             
-             <!-- Vídeo Adicionado -->
-             <div class="mt-12">
-                <h3 class="text-2xl font-bold text-center mb-6 text-gray-800">Entendendo a Escuta Especializada</h3>
-                <div class="relative max-w-4xl mx-auto" style="padding-bottom: 56.25%;">
-                    <iframe class="absolute top-0 left-0 w-full h-full rounded-lg shadow-lg" src="https://www.youtube.com/embed/eITWAe1VGWU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white mt-20">
-        <div class="container mx-auto px-6 py-8 text-center">
-            <p>Este material foi criado pela Gerencia de Integração Assistencial em parceria com a Escola de Saúde Pública de Florianópolis.</p>
-            <p class="text-sm text-gray-400 mt-2">&copy; Prefeitura Municipal de Florianópolis</p>
-        </div>
-    </footer>
-
-    <script>
-        // Lógica para o menu mobile
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-
-        // Lógica para abas
-        const tabButtons = document.querySelectorAll('.tab-button');
-        const tabContents = document.querySelectorAll('.tab-content');
-
-        const activeTabClasses = ['border-blue-500', 'text-blue-600'];
-        const inactiveTabClasses = ['border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300'];
-
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const tabId = button.dataset.tab;
-
-                tabButtons.forEach(btn => {
-                    btn.classList.remove(...activeTabClasses);
-                    btn.classList.add(...inactiveTabClasses);
-                });
-
-                button.classList.add(...activeTabClasses);
-                button.classList.remove(...inactiveTabClasses);
-                
-                tabContents.forEach(content => {
-                    if (content.id === tabId) {
-                        content.classList.remove('hidden');
-                    } else {
-                        content.classList.add('hidden');
-                    }
-                });
-            });
-            
-            // Set initial state
-            if(button.classList.contains('active-tab')){
-                 button.classList.add(...activeTabClasses);
-                 button.classList.remove(...inactiveTabClasses);
-            } else {
-                 button.classList.remove(...activeTabClasses);
-                 button.classList.add(...inactiveTabClasses);
-            }
-        });
-
-
-        // Lógica para o acordeão
-        const accordionHeaders = document.querySelectorAll('.accordion-header');
-        accordionHeaders.forEach(header => {
-            header.addEventListener('click', () => {
-                const content = header.nextElementSibling;
-                const icon = header.querySelector('svg');
-
-                // Fecha todos os outros acordeões
-                document.querySelectorAll('.accordion-content').forEach(item => {
-                    if (item !== content) {
-                        item.style.maxHeight = '0px';
-                        item.previousElementSibling.querySelector('svg').classList.remove('rotate-180');
-                    }
-                });
-                
-                // Abre ou fecha o acordeão clicado
-                if (content.style.maxHeight && content.style.maxHeight !== '0px') {
-                    content.style.maxHeight = '0px';
-                    icon.classList.remove('rotate-180');
-                } else {
-                    content.style.maxHeight = content.scrollHeight + 'px';
-                    icon.classList.add('rotate-180');
-                }
-            });
-        });
-        
-        // [START] Lógica do Quiz
-        const quizData = [
-            {
-                question: "Qual é a principal finalidade da Escuta Especializada, de acordo com o Decreto n° 9.603/2018?",
-                options: ["Produzir provas para um processo judicial.", "Garantir a proteção social e o provimento de cuidados à vítima.", "Responsabilizar criminalmente o agressor.", "Realizar uma investigação policial detalhada."],
-                answer: "Garantir a proteção social e o provimento de cuidados à vítima."
-            },
-            {
-                question: "Quem pode realizar o procedimento de 'Acolhida de Revelação'?",
-                options: ["Apenas psicólogos e assistentes sociais.", "Apenas profissionais da segurança pública.", "Qualquer profissional da rede de proteção (saúde, educação, etc.).", "Apenas conselheiros tutelares."],
-                answer: "Qualquer profissional da rede de proteção (saúde, educação, etc.)."
-            },
-            {
-                question: "A 'Entrevista de Escuta Especializada' é um procedimento de rotina?",
-                options: ["Sim, deve ser realizada em todos os atendimentos.", "Não, é uma atividade de excepcionalidade, realizada apenas sob suspeita de violência.", "Sim, é o primeiro passo de qualquer atendimento.", "Não, foi substituída pelo Depoimento Especial."],
-                answer: "Não, é uma atividade de excepcionalidade, realizada apenas sob suspeita de violência."
-            },
-            {
-                question: "Qual a principal diferença entre a Escuta Especializada e o Depoimento Especial?",
-                options: ["Não há diferença, são o mesmo procedimento com nomes diferentes.", "A Escuta Especializada visa produzir provas, e o Depoimento Especial visa a proteção.", "A Escuta Especializada é para proteção e cuidado, enquanto o Depoimento Especial é para a produção de provas perante autoridade policial/judiciária.", "A Escuta Especializada é realizada por juízes e o Depoimento Especial por profissionais de saúde."],
-                answer: "A Escuta Especializada é para proteção e cuidado, enquanto o Depoimento Especial é para a produção de provas perante autoridade policial/judiciária."
-            },
-            {
-                question: "É obrigatória a apresentação de um Boletim de Ocorrência (BO) para que a criança ou adolescente receba atendimento na rede de saúde?",
-                options: ["Sim, sem o BO o atendimento não pode ser iniciado.", "Não, o atendimento dispensa a apresentação do BO.", "Sim, mas apenas em casos de violência sexual.", "Apenas se a família desejar processar o agressor."],
-                answer: "Não, o atendimento dispensa a apresentação do BO."
-            },
-            {
-                question: "A notificação da violência no SINAN deve ser feita:",
-                options: ["Apenas após a confirmação da violência com provas concretas.", "Apenas se a família autorizar.", "Sempre que houver suspeita ou confirmação de violência.", "Apenas em casos de violência física grave."],
-                answer: "Sempre que houver suspeita ou confirmação de violência."
-            },
-            {
-                question: "Em casos de suspeita de violência sexual ocorrida há menos de 72 horas, qual protocolo deve ser seguido?",
-                options: ["Protocolo de atendimento de puericultura.", "Protocolo RAIVS.", "Protocolo de Diagnóstico e Tratamento de ISTs", "Protocolo de Registro de Boletim de Ocorrência"],
-                answer: "Protocolo RAIVS."
-            },
-            {
-                question: "A Ficha de Notificação do SINAN pode ser enviada para a autoridade policial como um documento de comunicação do caso?",
-                options: ["Sim, é o principal documento para iniciar a investigação.", "Não, a ficha do SINAN e o prontuário não devem ser usados para essa finalidade.", "Sim, mas apenas com autorização judicial.", "Apenas em casos onde não há familiar protetivo."],
-                answer: "Não, a ficha do SINAN e o prontuário não devem ser usados para essa finalidade."
-            },
-            {
-                question: "Quando o Conselho Tutelar deve ser comunicado sobre um caso de violência contra criança ou adolescente?",
-                options: ["Apenas se a criança ou adolescente solicitar.", "Em todos os casos, sendo de forma imediata em situações emergenciais.", "Apenas após a conclusão do tratamento de saúde.", "Somente se a família não tomar nenhuma providência."],
-                answer: "Em todos os casos, sendo de forma imediata em situações emergenciais."
-            },
-            {
-                question: "O que deve ser feito se houver sinais evidentes de gravidade, como gravidez decorrente de violência?",
-                options: ["Aguardar a consulta com o especialista.", "Comunicar apenas o Conselho Tutelar.", "Acionar imediatamente a Segurança Pública.", "Realizar apenas a notificação no SINAN."],
-                answer: "Acionar imediatamente a Segurança Pública."
-            }
+        // --- DADOS DO CURSO (Conteúdo Intacto) ---
+        const courseData = [
+          {
+            id: 1, title: "Sessão 1: Bullying", videoId: "SykY6r3CDLg", imageId: "v8TTs4z", quizBg: "https://i.imgur.com/HC9rTKN.png", 
+            questions: [
+              { question: "De acordo com o material, quais são os três elementos principais que, juntos, caracterizam uma situação de bullying?", options: [ { text: "Ser uma pessoa passiva, agressiva ou provocativa.", feedback: "Não é bem isso. O material aponta estes como perfis de quem está envolvido na situação a violência, e não como as características do ato de bullying em si." }, { text: "Intenção de magoar, repetição da agressão e desequilíbrio de poder entre as partes.", feedback: "Resposta correta. Esta opção descreve os três critérios (intenção, repetição e desequilíbrio de poder) que são apresentados no texto como definidores do bullying." }, { text: "Piadas ofensivas, boatos e exclusão de colegas.", feedback: "Não é bem isso. Estes são exemplos de atos que podem ocorrer no bullying, mas não são os três elementos conceituais que definem." }, { text: "Tristeza, medo e baixo interesse nos estudos.", feedback: "Não é bem isso. Estes são possíveis efeitos e consequências sofridas pela pessoa em situação de violência, e não os componentes que caracterizam a ação de bullying." } ], correct: 1 },
+              { question: "Em uma situação de bullying, o material descreve diferentes papéis para as testemunhas. Qual é a descrição da testemunha classificada como 'Observador'?", options: [ { text: "Participa ativamente da agressão junto com o autor.", feedback: "Não é bem isso. Esse comportamento é característico dos “Auxiliares”, que incentivam o autor da agressão. O auxiliar participa ativamente da ação." }, { text: "Afasta-se da situação ou finge que não está vendo a agressão acontecer.", feedback: "Isso mesmo. Esta descrição corresponde ao comportamento de quem se omite, que é a definição de “Observador”." }, { text: "Incentiva a agressão, mesmo sem participar diretamente.", feedback: "Não é bem isso. Esse papel é dos “Incentivadores”, que estimulam a agressão com palavras e gestos." }, { text: "Tenta ajudar a pessoa que está sofrendo com o bullying.", feedback: "Não é bem isso. Agir para ajudar a pessoa em situação de violência é papel dos “Defensores”." } ], correct: 1 },
+              { question: "O material sugere uma ação fundamental a ser tomada quando alguém percebe que 'algo não está bem' por causa de bullying ou outra violência. Qual é essa recomendação?", options: [ { text: "Ignorar o problema, esperando que ele desapareça com o tempo.", feedback: "Não é bem isso. A omissão pode permitir a violência continue e piore. A violência deixa marcas e precisa ser enfrentada." }, { text: "Repetir com outras pessoas o que estão fazendo com você.", feedback: "Não é bem isso. Esse comportamento é uma ação agressiva, que se manifesta em algumas pessoas que vivenciaram situações de violência; contudo, não se trata de uma resposta ou solução construtiva." }, { text: "Conversar com um adulto de confiança e procurar ajuda na escola ou na família.", feedback: "Isso mesmo. É importante romper o silêncio e buscar apoio em redes de segurança. Ninguém precisa passar por isso sozinho." }, { text: "Tentar resolver o problema sozinho para mostrar força.", feedback: "Não é bem isso. Isolar-se e tentar lidar com a situação sem ajuda pode agravar as consequências negativas. Ninguém precisa passar por isso sozinho." } ], correct: 2 }
+            ]
+          },
+          {
+            id: 2, title: "Sessão 2: Saúde Mental e Cultura de Paz", videoId: "-HuzLjbNsPI", imageId: "p9FZR7v", quizBg: "https://i.imgur.com/QP1ECX0.png",
+            questions: [
+              { question: "Imagine que um colega pegou seu lanche sem pedir. Considerando as formas de se comportar, qual seria uma resposta assertiva?", options: [ { text: "Melhor seria ficar quieto na minha, sem dizer nada para não criar uma briga desnecessária.", feedback: "Não é bem isso. Esta atitude demonstra medo do confronto e dificuldade em expressar o próprio descontentamento, o que é típico do comportamento passivo." }, { text: "Falar com o colega de forma educada, mas firme, explicando que você não gostou da atitude e pedindo que ele não faça mais isso.", feedback: "Isso mesmo! Esta opção demonstra a defesa dos próprios direitos com respeito pelo outro, buscando uma solução direta e sincera, que é a base da assertividade." }, { text: "Mostrar que não está para brincadeiras e gritar com o colega para pegar o lanche de volta à força.", feedback: "Não é bem isso. Esta reação viola os direitos do colega ao usar a força e a gritaria, sendo uma característica do comportamento agressivo." }, { text: "Relevar, mas depois quando tiver uma oportunidade fazer um comentário sarcástico sobre como algumas pessoas não têm educação.", feedback: "Não é bem isso. Esta forma de responder esconde a raiva por trás de palavras irônicas, expressando agressividade de maneira indireta e causando confusão." } ], correct: 1 },
+              { question: "De acordo com os Direitos Humanos e o princípio de respeitar a si mesmo, qual das seguintes atitudes é um direito seu em qualquer relação, seja com amigos ou família?", options: [ { text: "Exigir que suas necessidades sejam sempre atendidas pelos outros.", feedback: "Não é bem isso. Pedir que suas necessidades sejam consideradas é um direito, mas exigi-las sem considerar o outro não é, pois a outra pessoa também tem o direito de dizer não." }, { text: "Mudar de ideia apenas se a outra pessoa concordar.", feedback: "Não é bem isso. O direito de mudar de ideia não depende da aprovação de outras pessoas; é uma decisão pessoal e um ato de autorrespeito." }, { text: "Evitar expressar seus sentimentos para não incomodar ninguém.", feedback: "Não é bem isso. Expressar sentimentos e opiniões de forma respeitosa é um direito importante para a saúde mental e para relacionamentos honestos." }, { text: "Dizer 'não' a um pedido, sem precisar se sentir culpado por isso.", feedback: "Resposta correta. Estabelecer limites e dizer 'não' de forma respeitosa é um direito fundamental para o autorrespeito, conforme apresentado nos materiais sobre direitos humanos básicos." } ], correct: 3 },
+              { question: "Qual é uma consequência comum para uma pessoa que demonstra comportamento agressivo, segundo a apresentação?", options: [ { text: "A dificuldade em se defender e um misto de sentimentos como frustração e tristeza.", feedback: "Não é bem isso. Essas são consequências típicas do comportamento passivo, no qual a pessoa não expressa suas necessidades e sentimentos." }, { text: "O afastamento dos colegas e a criação de um clima ruim nas relações.", feedback: "Resposta correta. O comportamento agressivo tende a gerar conflitos e desrespeito, o que leva ao distanciamento social e a um ambiente negativo." }, { text: "A capacidade de fazer com que todos sempre concordem com suas ideias.", feedback: "Não é bem isso. Embora a pessoa com comportamento agressivo tente impor suas ideias, isso geralmente gera discordância e conflito, não concordância sincera." }, { text: "O fortalecimento das amizades e a resolução de problemas de forma eficaz.", feedback: "Não é bem isso. Estes são resultados positivos associados ao comportamento assertivo, que promove relacionamentos saudáveis." } ], correct: 1 }
+            ]
+          },
+          {
+            id: 3, title: "Sessão 3: Tempos Atuais", videoId: "_GnBaUp9nOg", imageId: "agfnFbY", quizBg: "https://i.imgur.com/DX1bZvu.png",
+            questions: [
+              { question: "O material explica que, na internet, reações explosivas e ataques muitas vezes recebem mais atenção. Qual dos fatores abaixo ajuda a explicar por que isso acontece?", options: [ { text: "O fato de que diálogos calmos e respeitosos geram mais engajamento online do que discussões.", feedback: "Não é bem isso. O material explica que, na verdade, conflitos e ataques tendem a gerar mais engajamento (curtidas, comentários) do que conversas tranquilas." }, { text: "A preferência geral das pessoas por conteúdos que exigem muita reflexão e tempo para serem entendidos.", feedback: "Não é bem isso. A 'cultura da instantaneidade' mencionada no material valoriza respostas rápidas e emocionais, havendo pouco espaço para uma reflexão mais profunda." }, { text: "O funcionamento das redes sociais, que recompensa polêmicas com mais visibilidade (curtidas e compartilhamentos).", feedback: "Resposta correta. Este comportamento é reforçado porque as plataformas digitais frequentemente dão mais destaque a conteúdos que causam polêmica e geram reações imediatas nas pessoas." }, { text: "A falta de interesse das pessoas em usar a internet para se comunicar com os outros.", feedback: "Não é bem isso. O texto sugere o contrário, que o maior acesso à internet deu às pessoas um novo e amplo espaço para se manifestarem. Cabe às pessoas aprenderem a se comunicar de forma respeitosa na internet." } ], correct: 2 },
+              { question: "O que é o 'efeito manada', de acordo com o material fornecido?", options: [ { text: "Um método para analisar informações de forma cuidadosa e lenta antes de tomar uma decisão.", feedback: "Não é bem isso. O texto aponta que o efeito manada ocorre na ausência de uma análise crítica própria, funcionando como um atalho para economizar energia na decisão, o que pode gerar más escolhas." }, { text: "Uma estratégia para criar conflitos e polêmicas de propósito nas redes sociais para ganhar seguidores.", feedback: "Não é bem isso. Embora o efeito manada possa levar à participação em polêmicas, sua definição é sobre seguir a maioria, sem pensar nas consequências. Não é necessariamente sobre iniciar conflitos de forma intencional." }, { text: "Um fenômeno onde as pessoas seguem o comportamento da maioria sem pensar criticamente, para se sentirem parte do grupo.", feedback: "Resposta correta. Essa definição corresponde ao que o texto descreve como um comportamento de seguir um grupo, agindo por instinto de proteção ou pertencimento." }, { text: "Uma forma de expressar opiniões de maneira individual e autêntica, mesmo que ninguém concorde.", feedback: "Não é bem isso. O efeito manada é justamente o oposto, pois envolve seguir o comportamento do grupo em vez de manter uma posição individual e única." } ], correct: 2 },
+              { question: "Segundo o material, agir com assertividade em um ambiente online que incentiva ataques é um 'ato de coragem'. O que significa ser assertivo nesse contexto?", options: [ { text: "Ficar em silêncio e usar a indiferença para mostrar que a outra pessoa está errada.", feedback: "Não é bem isso. O texto classifica o silêncio e a indiferença como manifestações passivo-agressivas, que também machucam e confundem." }, { text: "Expressar o que você sente e colocar limites, mas sem humilhar ou desrespeitar a outra pessoa.", feedback: "Resposta correta. Isso captura a essência da assertividade descrita: a coragem de se comunicar de forma clara e respeitosa, defendendo seu ponto de vista sem agredir." }, { text: "Reagir de forma explosiva e imediata para mostrar força e não deixar que outros passem por cima de você.", feedback: "Não é bem isso. O material aponta que uma reação explosiva demonstra falta de controle e dificuldade em lidar com sentimentos, e não força." }, { text: "Concordar com a maioria para evitar conflitos e garantir o pertencimento ao grupo.", feedback: "Não é bem isso. Esta atitude está mais alinhada ao 'efeito manada', que é a tendência de seguir o grupo para ser aceito, e não à assertividade." } ], correct: 1 }
+            ]
+          },
+          {
+            id: 4, title: "Sessão 4: Assertividade", videoId: "xbwv1di9ynI", imageId: "1SQU2yo", quizBg: "https://i.imgur.com/x5XpHo0.png",
+            questions: [
+              { question: "Imagine que um colega pegou seu estojo sem pedir permissão. Qual seria a forma mais assertiva de lidar com essa situação?", options: [ { text: "Pegar o estojo de volta com raiva e dizer para ele nunca mais fazer isso.", feedback: "Não é bem isso. Essa reação expressa o descontentamento de forma agressiva, o que pode gerar um conflito maior em vez de resolvê-lo pacificamente." }, { text: "Comentar com outro amigo sobre como seu colega é folgado.", feedback: "Não é bem isso. Essa atitude é considerada passivo-agressiva, pois não resolve o problema diretamente com a pessoa envolvida." }, { text: "Dizer com calma: 'Eu vou precisar do meu estojo agora. Na próxima vez, por favor, me peça antes de pegar.'", feedback: "Resposta correta. Essa resposta comunica sua necessidade de forma clara e firme, estabelecendo um limite sem desrespeitar o colega." }, { text: "Não dizer nada para não criar uma briga, mesmo que você precise do estojo.", feedback: "Não é bem isso. Essa é uma postura passiva, que ignora suas próprias necessidades e sentimentos, o que não é o objetivo da assertividade." } ], correct: 2 },
+              { question: "Qual das seguintes características descreve melhor uma pessoa com comportamento assertivo, de acordo com o material?", options: [ { text: "Tem a necessidade de ser agressiva para se impor e mostrar quem manda.", feedback: "Não é bem isso. A assertividade é o oposto da agressividade; ela busca o respeito mútuo, e não a dominação." }, { text: "Acredita que é melhor ficar em silêncio para evitar qualquer tipo de conflito.", feedback: "Não é bem isso. Ficar em silêncio quando algo incomoda é um comportamento passivo, não assertivo. A assertividade encoraja a comunicação." }, { text: "Busca preservar seus relacionamentos, mesmo durante desentendimentos.", feedback: "Resposta correta. Uma das características da assertividade é a tendência a manter os vínculos, pois o objetivo é resolver o problema, e não atacar a pessoa." }, { text: "Sente um forte impulso de dar o troco quando se sente prejudicada.", feedback: "Não é bem isso. O texto indica que uma pessoa assertiva possui um menor impulso de vingança, pois foca na solução e não em fazer o mesmo de volta." } ], correct: 2 },
+              { question: "Durante um debate em sala de aula, você discorda da opinião de um colega. Qual é a maneira assertiva de expressar seu ponto de vista?", options: [ { text: "Ficar quieto e concordar, mesmo pensando diferente, para a aula continuar logo.", feedback: "Não é bem isso. Essa é uma atitude passiva que não contribui para a discussão e invalida seus próprios pensamentos." }, { text: "Dizer: 'O que você falou está completamente errado e não faz o menor sentido.'", feedback: "Não é bem isso. Essa forma de se expressar ataca a opinião do outro de maneira agressiva, desvalorizando o que foi dito." }, { text: "Ignorar a opinião do colega e começar a falar sobre outro assunto.", feedback: "Não é bem isso. Mudar de assunto sem reconhecer o que foi dito pode ser desrespeitoso e não é uma forma construtiva de participar do debate." }, { text: "Dizer: 'Eu tenho uma perspectiva diferente. Para mim, a questão é...'", feedback: "Resposta correta. Esta resposta valida seu próprio ponto de vista usando uma frase com 'eu', sem atacar a opinião do colega, demonstrando respeito." } ], correct: 3 }
+            ]
+          },
+          {
+            id: 5, title: "Sessão 5: Agressivo e Passivo", videoId: "FW9YHIbw0Eg", imageId: "LGQaCtc", quizBg: "https://i.imgur.com/lsbC4nD.png",
+            questions: [
+              { question: "Qual das seguintes atitudes é um exemplo de comportamento passivo-agressivo, de acordo com o material?", options: [ { text: "Gritar ou xingar durante uma discussão.", feedback: "Não é bem isso. Esta é uma manifestação direta e aberta de hostilidade, característica do comportamento agressivo, e não do passivo-agressivo." }, { text: "Tentar impor sua opinião sobre a dos outros.", feedback: "Não é bem isso. A tentativa de mandar ou intimidar é uma forma de agressividade explícita, que busca o controle de maneira direta." }, { text: "Usar sarcasmo e ignorar um colega de propósito.", feedback: "Resposta correta. O comportamento passivo-agressivo se manifesta de forma indireta e velada, como através da ironia ou do silêncio intencional." }, { text: "Conversar para resolver um desentendimento.", feedback: "Não é bem isso. O diálogo é uma forma construtiva de lidar com conflitos e não se enquadra em um comportamento agressivo." } ], correct: 2 },
+              { question: "Um adolescente que age de forma agressiva pode acreditar que está ganhando algo, como respeito. Qual é uma das perdas reais que esse comportamento pode causar a longo prazo?", options: [ { text: "Um sentimento verdadeiro e duradouro de segurança.", feedback: "Não é bem isso. A agressividade pode funcionar como uma armadura, mas o que parece controle, muitas vezes é medo e insegurança." }, { text: "O afastamento dos colegas e a falta de confiança.", feedback: "Resposta correta. Comportamentos agressivos constantes geram um clima ruim e fazem com que as pessoas percam a confiança e se distanciem." }, { text: "A admiração e a liderança natural da turma.", feedback: "Não é bem isso. Muitos confundem intimidação com respeito, mas o resultado real é o afastamento, não a admiração." }, { text: "A solução rápida e mais eficaz do problema que te preocupa.", feedback: "Não é bem isso. Gritar ou ofender pode dar uma descarga momentânea da emoção, mas não resolve a raiz do problema, podendo até aumentá-lo." } ], correct: 1 },
+              { question: "O comportamento agressivo muitas vezes é uma fachada. O que a frase 'O que parece força, muitas vezes é insegurança' significa nesse contexto?", options: [ { text: "Que apenas pessoas que se sentem inseguras são capazes de ficar com raiva.", feedback: "Não é bem isso. O texto diferencia a raiva (uma emoção que todos podem sentir) da agressividade (o comportamento), que pode ser uma forma prejudicial de expressar essa raiva." }, { text: "Que a agressividade é a maneira mais eficaz de demonstrar autoconfiança.", feedback: "Não é bem isso. O material aponta justamente o contrário, conectando a necessidade de ser agressivo à falta de segurança em si mesmo." }, { text: "Que o autor da agressão pode usar atitudes hostis para esconder sentimentos de medo ou baixa autoestima.", feedback: "Resposta correta. Essa afirmação resume a ideia de que a agressividade pode funcionar como uma 'armadura emocional' para proteger uma vulnerabilidade interna." }, { text: "Que pessoas fisicamente mais fortes são naturalmente mais agressivas.", feedback: "Não é bem isso. A agressividade é um comportamento influenciado por fatores psicológicos e sociais, não por características físicas." } ], correct: 2 }
+            ]
+          },
+          {
+            id: 6, title: "Sessão 6: Comunicação com Confiança", videoId: "pkWz0mp5r2E", imageId: "yewRiK0", quizBg: "https://i.imgur.com/6q6EfBM.png",
+            questions: [
+              { question: "Você precisa da resposta de um colega sobre uma parte importante de um trabalho escolar. Você manda mensagem, vê que a pessoa está online, mas ela te ignora de propósito. Qual a atitude mais assertiva a tomar?", options: [ { text: "Decidir ignorar a pessoa de volta na próxima vez que ela precisar de algo seu.", feedback: "Não é bem isso. Pagar na mesma moeda, apesar de parecer justo, é uma forma de comunicação passiva ou passivo-agressiva que não resolve a questão atual." }, { text: "Não dizer nada e simplesmente fazer a parte do trabalho que cabia ao colega para não se prejudicar.", feedback: "Não é bem isso. Assumir a responsabilidade do outro sem comunicar o problema é uma resposta passiva que pode levar à sobrecarga e ao ressentimento." }, { text: "Enviar várias mensagens seguidas, cobrando uma resposta, ou reclamar da atitude da pessoa no grupo da turma.", feedback: "Não é bem isso. Pressionar ou expor o colega publicamente são reações agressivas que podem piorar a relação e dificultar a colaboração." }, { text: "Procurar a pessoa e, com calma, dizer: 'Percebi que você não respondeu minha mensagem. Aconteceu algo? Precisamos definir isso para o trabalho.'.", feedback: "Resposta correta. Essa abordagem descreve o fato (mensagem não respondida), expressa sua necessidade e abre espaço para o diálogo sem fazer acusações." } ], correct: 3 },
+              { question: "Durante a apresentação de um trabalho em grupo, um colega percebe um erro, levanta a voz e culpa você na frente de toda a turma. Qual seria uma forma assertiva de responder a essa situação?", options: [ { text: "Levantar a voz de volta, dizendo que o erro não foi só seu e que ele não deveria expor você daquela forma.", feedback: "Não é bem isso. Responder com agressividade pode iniciar uma briga e piorar a situação, afastando a possibilidade de uma solução respeitosa." }, { text: "Ficar em silêncio, com vergonha, e não dizer nada para evitar mais conflito, mas procurar o professor em outro momento no particular para dizer que na verdade a culpa foi do colega.", feedback: "Não é bem isso. Essa reação passiva desconsidera seus próprios sentimentos e permite que o desrespeito continue sem ser abordado." }, { text: "Ignorar o comentário na hora e, mais tarde, reclamar do colega para os outros membros do grupo, comentando sua atitude.", feedback: "Não é bem isso. Essa é uma forma passivo-agressiva de lidar com o problema, pois evita o confronto direto mas gera fofoca e não resolve a questão com a pessoa envolvida." }, { text: "Dizer com calma: 'Entendo que você está frustrado(a), mas peço que não levante sua voz comigo. Podemos conversar sobre isso com mais calma depois da apresentação para resolvermos.'", feedback: "Resposta correta. Esta abordagem reconhece o sentimento do outro, estabelece um limite claro de como você deseja ser tratado(a) e propõe uma solução construtiva." } ], correct: 3 },
+              { question: "Você está animado(a) com uma roupa nova, mas um(a) colega olha para você e diz com um tom de deboche: \"Nossa, que original... de onde você tirou essa ideia?\". Como você poderia reagir de maneira assertiva?", options: [ { text: "Responder com sarcasmo também, como: \"Do mesmo lugar onde você tirou a sua simpatia, que claramente ficou em casa hoje.\"", feedback: "Não é bem isso. Usar a mesma ironia como contra-ataque transforma a conversa em uma disputa, em vez de esclarecer a situação." }, { text: "Perguntar de forma direta e neutra: \"Não tenho certeza do que você quis dizer com esse comentário. Foi um elogio ou uma crítica?\"", feedback: "Resposta correta. Esta resposta quebra o ciclo da ironia ao pedir clareza, mostrando que você percebeu a ambiguidade e quer entender a real intenção." }, { text: "Ofender a roupa do(a) colega, dizendo: \"Pelo menos eu tento ser diferente, não uso sempre a mesma coisa que todo mundo.\"", feedback: "Não é bem isso. Reagir com um ataque direto é uma resposta agressiva que desvia o foco do comentário original e inicia um novo conflito." }, { text: "Fingir que não ouviu o comentário e guardar para si o sentimento, então esperar a primeira oportunidade para devolver com um comentário ainda mais sarcástico ao(à) mesmo(a) colega.", feedback: "Não é bem isso. Essa reação passiva ignora o comentário, mas permite que a ofensa indireta afete seus sentimentos, o que a longo prazo pode gerar uma reação agressiva devido aos sentimentos represados." } ], correct: 1 }
+            ]
+          },
+          {
+            id: 7, title: "Sessão 7: Como lidar com os conflitos", videoId: "bThLZOFJWVs", imageId: "EMPiCsl", quizBg: "https://i.imgur.com/nVbV0CQ.png",
+            questions: [
+              { question: "Qual é a principal diferença entre um conflito saudável e um conflito prejudicial (que faz mal)?", options: [ { text: "Conflitos saudáveis só acontecem com a família, e os prejudiciais acontecem com pessoas de fora.", feedback: "Não é bem isso. O tipo de conflito depende de como ele é gerenciado, e não das pessoas envolvidas; conflitos de ambos os tipos podem ocorrer em qualquer relação." }, { text: "Conflitos saudáveis são sempre silenciosos, e os prejudiciais são sempre com gritos.", feedback: "Não é bem isso. O volume da conversa não define se o conflito é saudável; o mais importante é a intenção e o respeito na comunicação." }, { text: "Em um conflito saudável, as pessoas sempre concordam no final, e no prejudicial, elas continuam discordando.", feedback: "Não é bem isso. O objetivo de um conflito saudável é chegar a uma solução, o que pode envolver um acordo ou um entendimento, mas não necessariamente concordância total." }, { text: "O conflito saudável foca em encontrar uma solução com respeito, enquanto o prejudicial envolve ataques pessoais.", feedback: "Resposta correta. O texto diferencia os dois tipos de conflito pela abordagem: o saudável busca solução com respeito, enquanto o prejudicial é marcado por ataques e desrespeito." } ], correct: 3 },
+              { question: "O material dá dicas de como lidar com desentendimentos. Se você está no meio de uma discussão que está ficando muito tensa, qual é uma boa estratégia?", options: [ { text: "Sugerir uma pausa por um momento para todo mundo se acalmar e pensar melhor.", feedback: "Resposta correta. Tem vezes que é importante se afastar momentaneamente para evitar que a discussão saia do controle." }, { text: "Tentar ganhar a discussão trazendo à tona todos os erros que a outra pessoa cometeu no passado.", feedback: "Não é bem isso. Lembrar de erros passados provavelmente vai piorar a situação, importante evitar que ocorra uma escalada do conflito." }, { text: "Ignorar o que a outra pessoa está dizendo e apenas repetir o seu ponto de vista várias vezes.", feedback: "Não é bem isso. Isso mostra uma falha na comunicação e na escuta, que são causas de conflitos prejudiciais, em vez de uma solução." }, { text: "Ficar em silêncio e fingir que o problema não existe para a discussão acabar logo.", feedback: "Não é bem isso. Evitar o problema não o resolve; o texto incentiva a comunicação aberta para encontrar a raiz do desentendimento." } ], correct: 0 },
+              { question: "Se você está em um desentendimento com alguém, qual das seguintes ações é recomendada para lidar com a situação de forma saudável?", options: [ { text: "Focar em provar que você está certo e que a outra pessoa está errada.", feedback: "Não é bem isso. Um conflito saudável, de acordo com o material, busca soluções e entendimento, não apontar um vencedor na discussão." }, { text: "Contar para todos os seus outros amigos a sua versão da história para ver quem concorda com você.", feedback: "Não é bem isso. Apesar de o texto mencionar que conversar com alguém de confiança pode ajudar, a primeira etapa sugerida é a comunicação direta com a pessoa envolvida." }, { text: "Ignorar o problema e esperar que a outra pessoa peça desculpas primeiro.", feedback: "Não é bem isso. O texto sugere que conflitos não gerenciados podem piorar, em vez de se resolverem sozinhos com o tempo." }, { text: "Expressar de forma amigável o que está incomodando e também ouvir o lado da outra pessoa.", feedback: "Resposta correta. Esta opção reflete diretamente a primeira dica de 'Como Lidar com Conflitos', que é a comunicação aberta e a escuta." } ], correct: 3 }
+            ]
+          }
         ];
 
-        const quizStartScreen = document.getElementById('quiz-start-screen');
-        const quizQuestionScreen = document.getElementById('quiz-question-screen');
-        const quizResultsScreen = document.getElementById('quiz-results-screen');
-        
-        const startQuizBtn = document.getElementById('start-quiz-btn');
-        const nextQuestionBtn = document.getElementById('next-question-btn');
-        const restartQuizBtn = document.getElementById('restart-quiz-btn');
+        // --- APP PRINCIPAL (ESTRUTURA MODULAR) ---
 
-        const questionHeader = document.getElementById('question-header');
-        const questionText = document.getElementById('question-text');
-        const optionsContainer = document.getElementById('options-container');
-        const scoreText = document.getElementById('score-text');
-        const feedbackContainer = document.getElementById('feedback-container');
+        function App() {
+          const [screen, setScreen] = useState('menu'); // 'menu', 'cover', 'content', 'quiz', 'results'
+          const [userName, setUserName] = useState(''); 
+          const [selectedModuleIndex, setSelectedModuleIndex] = useState(null); // Módulo independente selecionado
+          
+          // Quiz State para o módulo específico
+          const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+          const [selectedOption, setSelectedOption] = useState(null);
+          const [isAnswerChecked, setIsAnswerChecked] = useState(false);
+          const [moduleScore, setModuleScore] = useState(0);
 
-        let currentQuestionIndex = 0;
-        let score = 0;
-        let userAnswers = [];
-
-        function startQuiz() {
-            currentQuestionIndex = 0;
-            score = 0;
-            userAnswers = [];
-            quizStartScreen.classList.add('hidden');
-            quizResultsScreen.classList.add('hidden');
-            quizQuestionScreen.classList.remove('hidden');
-            nextQuestionBtn.innerText = 'Próxima Pergunta';
-            showQuestion();
-        }
-
-        function showQuestion() {
-            resetState();
-            const currentQuestion = quizData[currentQuestionIndex];
-            questionHeader.innerText = `Pergunta ${currentQuestionIndex + 1} de ${quizData.length}`;
-            questionText.innerText = currentQuestion.question;
-
-            currentQuestion.options.forEach((option, index) => {
-                const letter = String.fromCharCode(97 + index); // a, b, c, d
-                const button = document.createElement('button');
-                button.innerText = `${letter}) ${option}`;
-                button.dataset.originalText = option; // Store original text
-                button.classList.add('quiz-option');
-                button.addEventListener('click', () => selectOption(button));
-                optionsContainer.appendChild(button);
-            });
-        }
-
-        function resetState() {
-            nextQuestionBtn.disabled = true;
-            while (optionsContainer.firstChild) {
-                optionsContainer.removeChild(optionsContainer.firstChild);
+          // Efeito para Suporte a URL Modular (ex: index.html?modulo=1)
+          useEffect(() => {
+            const params = new URLSearchParams(window.location.search);
+            const moduloParam = params.get('modulo');
+            if (moduloParam) {
+              const index = parseInt(moduloParam, 10) - 1;
+              if (index >= 0 && index < courseData.length) {
+                setSelectedModuleIndex(index);
+                setScreen('cover');
+              }
             }
-        }
-        
-        function selectOption(button) {
-            if (optionsContainer.querySelector('.correct') || optionsContainer.querySelector('.incorrect')) {
-                return;
+          }, []);
+
+          // Helper para Scroll Top
+          useEffect(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, [screen, selectedModuleIndex, currentQuestionIndex]);
+
+          const currentSession = selectedModuleIndex !== null ? courseData[selectedModuleIndex] : null;
+
+          // --- HANDLERS ---
+          
+          const selectModule = (index) => {
+            setSelectedModuleIndex(index);
+            setScreen('cover');
+          };
+
+          const startModuleContent = () => {
+            setScreen('content');
+          };
+
+          const startQuiz = () => {
+            setScreen('quiz');
+            setCurrentQuestionIndex(0);
+            setSelectedOption(null);
+            setIsAnswerChecked(false);
+            setModuleScore(0);
+          };
+
+          const checkAnswer = () => {
+            if (selectedOption === null) return;
+            setIsAnswerChecked(true);
+            const correct = currentSession.questions[currentQuestionIndex].correct;
+            if (selectedOption === correct) {
+              setModuleScore(prev => prev + 1);
             }
+          };
 
-            const selectedText = button.dataset.originalText;
-            userAnswers[currentQuestionIndex] = selectedText;
-
-            const currentQuestion = quizData[currentQuestionIndex];
-            const correctAnswer = currentQuestion.answer;
-            
-            const isCorrect = (selectedText === correctAnswer);
-            if (isCorrect) {
-                score++;
-            }
-
-            const allOptions = optionsContainer.querySelectorAll('.quiz-option');
-            allOptions.forEach(optBtn => {
-                optBtn.disabled = true;
-                if (optBtn.dataset.originalText === correctAnswer) {
-                    optBtn.classList.add('correct');
-                } else if (optBtn === button) {
-                    optBtn.classList.add('incorrect');
-                }
-            });
-            
-            if (currentQuestionIndex === quizData.length - 1) {
-                nextQuestionBtn.innerText = 'Ver Resultados';
-            }
-
-            nextQuestionBtn.disabled = false;
-        }
-
-        function showNextQuestion() {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < quizData.length) {
-                showQuestion();
+          const nextQuestion = () => {
+            if (currentQuestionIndex < currentSession.questions.length - 1) {
+              setCurrentQuestionIndex(prev => prev + 1);
+              setSelectedOption(null);
+              setIsAnswerChecked(false);
             } else {
-                showResults();
+              setScreen('results'); // Fim do quiz daquele módulo específico
             }
-        }
+          };
 
-        function showResults() {
-            quizQuestionScreen.classList.add('hidden');
-            quizResultsScreen.classList.remove('hidden');
+          const backToMenu = () => {
+            setSelectedModuleIndex(null);
+            setScreen('menu');
+            // Tenta remover o parâmetro URL se existir, com tratamento de erro para iframes/ambientes restritos
+            try {
+              window.history.replaceState({}, document.title, window.location.pathname);
+            } catch (error) {
+              console.warn("Ambiente restrito: não foi possível limpar a URL do navegador.");
+            }
+          };
 
-            const percentage = Math.round((score / quizData.length) * 100);
-            let resultMessage = '';
+          // --- TELAS ---
+
+          // 0. HUB CENTRAL DOS MÓDULOS (Opcional se não usar ?modulo=X)
+          if (screen === 'menu') {
+            return (
+              <div className="min-h-screen flex flex-col font-sans bg-gray-50">
+                <header className="bg-purple-900 text-white p-6 shadow-lg relative z-10">
+                  <div className="max-w-6xl mx-auto text-center">
+                    <h1 className="text-3xl font-extrabold tracking-tight">Cuidar, Proteger e Conviver</h1>
+                    <p className="text-teal-200 mt-2">Saúde Mental e Prevenção das Violências</p>
+                  </div>
+                </header>
+                
+                <main className="flex-grow p-6 md:p-10 max-w-6xl mx-auto w-full animate-fade-in-up">
+                  <div className="text-center mb-10">
+                    <h2 className="text-2xl font-bold text-gray-800">Selecione um Módulo para Iniciar</h2>
+                    <p className="text-gray-500 mt-2">Escolha uma das páginas independentes abaixo para realizar a atividade.</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {courseData.map((session, index) => (
+                      <div 
+                        key={session.id} 
+                        onClick={() => selectModule(index)}
+                        className="bg-white rounded-3xl p-6 shadow-md hover:shadow-xl hover:scale-[1.02] border border-gray-100 transition-all duration-300 cursor-pointer flex flex-col justify-between"
+                      >
+                        <div>
+                          <div className="w-12 h-12 bg-teal-100 text-teal-700 rounded-full flex items-center justify-center font-black text-xl mb-4">
+                            {index + 1}
+                          </div>
+                          <h3 className="text-xl font-bold text-gray-800 mb-2">{session.title.split(': ')[1] || session.title}</h3>
+                          <p className="text-sm text-gray-500 line-clamp-2">Aprofunde seu conhecimento com vídeos, material de apoio e um quiz específico.</p>
+                        </div>
+                        <div className="mt-6 flex items-center text-teal-600 font-bold gap-2">
+                          Acessar Módulo <ArrowRight size={16} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </main>
+                <Footer className="bg-white text-gray-600 border-t border-gray-200" />
+              </div>
+            );
+          }
+
+          // 1. CAPA INDIVIDUAL DO MÓDULO
+          if (screen === 'cover' && currentSession) {
+            return (
+              <div 
+                className="min-h-screen flex flex-col font-sans relative"
+                style={{
+                  backgroundImage: `url('https://i.imgur.com/FOImCKJ.png')`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundAttachment: 'fixed'
+                }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-b from-purple-900/60 to-black/50"></div>
+                
+                {/* Botão de voltar suave no topo */}
+                <button onClick={backToMenu} className="absolute top-4 left-4 md:top-6 md:left-6 z-20 text-white/80 hover:text-white flex items-center gap-2 font-medium bg-black/20 hover:bg-black/40 px-4 py-2 rounded-full backdrop-blur-sm transition-all">
+                   <ArrowRight className="rotate-180" size={18} /> Menu Principal
+                </button>
+
+                <div className="flex-grow flex items-center justify-center relative z-10 w-full p-4 md:p-6 my-4 md:my-0">
+                  <div className="max-w-4xl w-full text-center text-white space-y-8 animate-fade-in-up">
+                    <div className="bg-black/40 backdrop-blur-none p-6 md:p-10 rounded-3xl border border-white/10 shadow-2xl mx-auto">
+                      <h1 className="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight leading-tight text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-white">
+                        Cuidar, Proteger e Conviver
+                      </h1>
+                      <div className="inline-block bg-teal-600/80 backdrop-blur-sm px-6 py-2 rounded-full mb-8">
+                        <h2 className="text-lg md:text-2xl font-bold text-white tracking-wide">
+                           {currentSession.title}
+                        </h2>
+                      </div>
+                      
+                      <p className="text-base md:text-xl leading-relaxed text-gray-100 mb-8 max-w-2xl mx-auto drop-shadow-md">
+                        “Cuidar da saúde mental é fundamental para viver com mais equilíbrio e harmonia e falar sobre prevenção das violências fortalece relações mais seguras e acolhedoras.
+                        <br/><br/>
+                        Este módulo convida você a refletir, aprender e testar seus conhecimentos.”
+                      </p>
+
+                      <div className="flex flex-col items-center gap-4">
+                        <input
+                          type="text"
+                          placeholder="Digite seu nome para começar..."
+                          value={userName}
+                          onChange={(e) => setUserName(e.target.value)}
+                          className="w-full max-w-md px-6 py-3 rounded-full bg-white/20 border border-white/30 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-400 text-center text-lg backdrop-blur-sm transition-all"
+                        />
+                        <Button onClick={startModuleContent} variant="primary" className="mx-auto text-lg w-full md:w-auto">
+                          Iniciar Módulo <ArrowRight size={24} />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <Footer className="relative z-10 bg-black/40 text-white/80 w-full" />
+              </div>
+            );
+          }
+
+          // 2. CONTEÚDO DO MÓDULO (Sem o progresso global)
+          if (screen === 'content' && currentSession) {
+            return (
+              <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
+                <header className="bg-purple-900 text-white p-4 shadow-lg sticky top-0 z-50">
+                  <div className="max-w-5xl mx-auto flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                      <button onClick={backToMenu} className="hover:bg-purple-800 p-2 rounded-full transition-colors hidden sm:block" title="Voltar aos Módulos">
+                        <ArrowRight className="rotate-180" size={20} />
+                      </button>
+                      <h3 className="font-bold text-lg md:text-xl truncate">{currentSession.title}</h3>
+                    </div>
+                    <span className="bg-teal-600 px-4 py-1.5 rounded-full text-xs font-bold tracking-wide shadow-sm">
+                      Módulo Independente
+                    </span>
+                  </div>
+                </header>
+
+                <main className="flex-grow p-4 md:p-8 max-w-5xl mx-auto w-full animate-fade-in-up">
+                  <div className="flex flex-col gap-10 mb-10 mt-4">
+                    {/* Vídeo */}
+                    <div className="bg-white p-6 md:p-8 rounded-3xl shadow-lg border border-gray-100">
+                      <div className="flex items-center gap-3 mb-5 text-purple-900 border-b pb-4 border-gray-100">
+                        <div className="p-2 bg-purple-100 rounded-lg">
+                          <Play size={32} className="fill-purple-600 text-purple-600" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-2xl">Assista ao Vídeo</h4>
+                          <p className="text-gray-500 text-sm">Aprofunde seu conhecimento sobre o tema do módulo</p>
+                        </div>
+                      </div>
+                      <div className="aspect-video w-full rounded-2xl overflow-hidden bg-black shadow-inner ring-4 ring-purple-50">
+                        <iframe 
+                          width="100%" height="100%" src={`https://www.youtube.com/embed/${currentSession.videoId}`} title={currentSession.title}
+                          frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen
+                        ></iframe>
+                      </div>
+                    </div>
+
+                    {/* Imagem/Infográfico */}
+                    <div className="bg-white p-6 md:p-8 rounded-3xl shadow-lg border border-gray-100">
+                      <div className="flex items-center gap-3 mb-5 text-teal-700 border-b pb-4 border-gray-100">
+                        <div className="p-2 bg-teal-100 rounded-lg">
+                          <BookOpen size={32} className="text-teal-600" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-2xl">Material de Apoio</h4>
+                          <p className="text-gray-500 text-sm">Infográfico para reflexão</p>
+                        </div>
+                      </div>
+                      <div className="rounded-2xl overflow-hidden shadow-inner border border-gray-200 bg-gray-50">
+                        <img 
+                          src={`https://i.imgur.com/${currentSession.imageId}.png`} alt={`Material de apoio: ${currentSession.title}`}
+                          className="w-full h-auto object-contain hover:scale-[1.01] transition-transform duration-500"
+                          onError={(e) => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/800x600?text=Imagem+Carregando..."; }}
+                        />
+                      </div>
+                      
+                      {currentSession.id === 1 && (
+                        <div className="mt-6 p-4 bg-red-50 border-2 border-red-100 rounded-xl text-center">
+                            <p className="font-extrabold text-red-600 text-lg md:text-xl mb-3 tracking-wide">Bullying é crime!!! Ciberbullying também, e com pena maior!!!</p>
+                            <a href="https://drive.google.com/file/d/134N-A2yfVDE5ZbyV9gY6Xh75HhAt3LsP/view?usp=sharing" target="_blank" rel="noopener noreferrer"
+                               className="inline-flex items-center gap-2 text-red-700 hover:text-red-900 font-bold border-b-2 border-red-200 hover:border-red-900 transition-colors">
+                                Caso queira saber mais acesse o documento clicando aqui <ArrowRight size={16} />
+                            </a>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-xl mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div>
+                      <h5 className="font-bold text-blue-900 mb-1 text-lg">Pronto para testar seus conhecimentos?</h5>
+                      <p className="text-blue-800">Complete o teste rápido deste módulo para finalizar.</p>
+                    </div>
+                    <Button onClick={startQuiz} variant="primary" className="w-full md:w-auto shrink-0">
+                      Fazer Teste Rápido <CheckCircle size={20} />
+                    </Button>
+                  </div>
+                </main>
+                <Footer className="bg-gray-100 text-gray-600 border-t border-gray-200" />
+              </div>
+            );
+          }
+
+          // 3. QUIZ DO MÓDULO
+          if (screen === 'quiz' && currentSession) {
+            const question = currentSession.questions[currentQuestionIndex];
+            const hasCustomBg = !!currentSession.quizBg;
+            
+            return (
+              <div 
+                className={`min-h-screen flex flex-col font-sans ${!hasCustomBg ? 'bg-slate-100' : 'relative'}`}
+                style={hasCustomBg ? { backgroundImage: `url('${currentSession.quizBg}')`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed'} : {}}
+              >
+                {hasCustomBg && <div className="absolute inset-0 bg-black/50 z-0"></div>}
+                
+                <div className="flex-grow flex items-center justify-center p-4 relative z-10 w-full animate-fade-in-up">
+                  <div className="bg-white/30 max-w-2xl w-full rounded-3xl shadow-2xl overflow-hidden flex flex-col backdrop-blur-md">
+                    <div className="bg-teal-600 p-6 text-white relative">
+                      <button onClick={backToMenu} className="absolute top-4 right-4 text-white/70 hover:text-white" title="Sair do Quiz">
+                        <XCircle size={24} />
+                      </button>
+                      <h2 className="text-2xl font-bold flex items-center gap-2 pr-8">
+                        <Star className="fill-yellow-400 text-yellow-400 shrink-0" /> 
+                        Quiz: {currentSession.title}
+                      </h2>
+                      <p className="opacity-90 mt-2 font-medium">Questão {currentQuestionIndex + 1} de {currentSession.questions.length}</p>
+                    </div>
+
+                    <div className="p-6 md:p-8 flex-grow bg-white/50">
+                      <h3 className="text-xl font-semibold text-gray-800 mb-6 leading-relaxed">
+                        {question.question}
+                      </h3>
+
+                      <div className="space-y-3">
+                        {question.options.map((option, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => !isAnswerChecked && setSelectedOption(idx)}
+                            className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 flex items-center justify-between group
+                              ${isAnswerChecked 
+                                ? (idx === question.correct 
+                                    ? "bg-green-100 border-green-500 text-green-900 shadow-sm" 
+                                    : (idx === selectedOption ? "bg-red-100 border-red-500 text-red-900" : "bg-white/60 border-gray-200 opacity-60"))
+                                : (selectedOption === idx 
+                                    ? "bg-teal-50 border-teal-500 shadow-md" 
+                                    : "bg-white/90 border-gray-200 hover:border-teal-300 hover:bg-teal-50")
+                              }
+                            `}
+                            disabled={isAnswerChecked}
+                          >
+                            <span className="font-medium pr-4">{option.text}</span>
+                            {isAnswerChecked && idx === question.correct && <CheckCircle className="text-green-600 flex-shrink-0" size={24}/>}
+                            {isAnswerChecked && idx === selectedOption && idx !== question.correct && <XCircle className="text-red-600 flex-shrink-0" size={24}/>}
+                          </button>
+                        ))}
+                      </div>
+
+                      {isAnswerChecked && selectedOption !== null && (
+                        <div className={`mt-6 p-4 rounded-xl border-l-4 animate-fade-in-up shadow-sm ${
+                          selectedOption === question.correct 
+                            ? "bg-green-50 border-green-500 text-green-900" 
+                            : "bg-orange-50 border-orange-500 text-orange-900"
+                        }`}>
+                          <div className="flex items-start gap-3">
+                            <Info className="flex-shrink-0 mt-1" />
+                            <div>
+                              <p className="font-bold mb-1">
+                                {selectedOption === question.correct ? "Resposta Correta!" : "Feedback:"}
+                              </p>
+                              <p className="text-sm md:text-base leading-relaxed">
+                                {question.options[selectedOption].feedback}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="p-6 border-t border-gray-200/50 bg-gray-50/90 flex justify-end">
+                      {!isAnswerChecked ? (
+                        <Button onClick={checkAnswer} disabled={selectedOption === null} variant="primary">
+                          Confirmar Resposta
+                        </Button>
+                      ) : (
+                        <Button onClick={nextQuestion} variant={currentQuestionIndex < currentSession.questions.length - 1 ? "secondary" : "success"}>
+                          {currentQuestionIndex < currentSession.questions.length - 1 ? "Próxima Questão" : "Finalizar Módulo"} <ArrowRight size={20} />
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <Footer className={`relative z-10 ${hasCustomBg ? 'text-white/90 bg-black/40' : 'text-gray-600 bg-gray-100'}`} />
+              </div>
+            );
+          }
+
+          // 4. RESULTADOS DO MÓDULO INDIVIDUAL
+          if (screen === 'results' && currentSession) {
+            const totalModuleQuestions = currentSession.questions.length;
+            const percentage = Math.round((moduleScore / totalModuleQuestions) * 100);
+
+            let resultTitle = "";
+            let resultSubtitle = "";
+            let ResultIcon = Trophy; 
+            let iconColor = "text-yellow-500";
+            let iconBg = "bg-yellow-100";
+
             if (percentage === 100) {
-                resultMessage = 'Excelente! Você acertou todas as perguntas!';
-            } else if (percentage >= 70) {
-                resultMessage = 'Muito bem! Ótimo resultado.';
-            } else if (percentage >= 50) {
-                resultMessage = 'Bom trabalho! Continue estudando para aprimorar.';
+              resultTitle = `Excelente${userName ? `, ${userName}` : ''}!`;
+              resultSubtitle = "Você compreendeu perfeitamente este módulo.";
+            } else if (percentage >= 66) {
+              resultTitle = `Muito bem${userName ? `, ${userName}` : ''}!`;
+              resultSubtitle = "Você foi ótimo, mas sempre há espaço para revisar os detalhes.";
+              ResultIcon = Star; 
+              iconColor = "text-blue-500";
+              iconBg = "bg-blue-100";
             } else {
-                resultMessage = 'Não desanime! Reveja os pontos e tente novamente.';
+              resultTitle = `Opa${userName ? `, ${userName}` : ''}!`;
+              resultSubtitle = "Acho melhor dar mais uma olhada no conteúdo e tentar o quiz de novo. 😉";
+              ResultIcon = RefreshCw; 
+              iconColor = "text-orange-500";
+              iconBg = "bg-orange-100";
             }
 
-            scoreText.innerHTML = `
-                <div class="text-2xl mb-2">Você acertou <span class="font-bold text-blue-600">${score}</span> de ${quizData.length} (${percentage}%)</div>
-                <div class="text-lg text-gray-600">${resultMessage}</div>
-            `;
+            return (
+              <div className="min-h-screen bg-gradient-to-br from-teal-500 to-purple-700 flex flex-col font-sans">
+                <div className="flex-grow flex items-center justify-center p-4">
+                  <div className="bg-white max-w-2xl w-full rounded-3xl shadow-2xl p-8 md:p-12 text-center space-y-8 animate-fade-in-up">
+                    
+                    <div className="flex justify-center mb-6">
+                      <div className={`${iconBg} p-6 rounded-full inline-flex`}>
+                        <ResultIcon className={`${iconColor} w-16 h-16 md:w-24 md:h-24 fill-current animate-bounce-slow`} />
+                      </div>
+                    </div>
 
-            feedbackContainer.innerHTML = '';
-            quizData.forEach((question, index) => {
-                const userAnswer = userAnswers[index];
-                const isCorrect = userAnswer === question.answer;
+                    <div>
+                      <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-2">{resultTitle}</h1>
+                      <h2 className="text-xl text-gray-600">{resultSubtitle}</h2>
+                      <p className="text-teal-600 font-bold mt-2 text-sm uppercase tracking-widest">{currentSession.title}</p>
+                    </div>
 
-                const userAnswerIndex = question.options.indexOf(userAnswer);
-                const userAnswerLetter = userAnswerIndex >= 0 ? String.fromCharCode(97 + userAnswerIndex) : '';
+                    <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                      <p className="text-sm text-gray-500 uppercase tracking-wide font-bold mb-2">Seu Aproveitamento Neste Módulo</p>
+                      <div className="text-5xl font-black text-teal-600 mb-2">{percentage}%</div>
+                      <p className="text-gray-600">Você acertou <strong className="text-gray-900">{moduleScore}</strong> de <strong className="text-gray-900">{totalModuleQuestions}</strong> questões.</p>
+                    </div>
 
-                const correctAnswerIndex = question.options.indexOf(question.answer);
-                const correctAnswerLetter = String.fromCharCode(97 + correctAnswerIndex);
+                    <div className="flex flex-col md:flex-row gap-4 justify-center w-full mt-8">
+                      <Button onClick={() => setScreen('cover')} variant="secondary" className="w-full md:w-auto">
+                        <RefreshCw size={20} /> Refazer Módulo
+                      </Button>
+                      <Button onClick={backToMenu} variant="primary" className="w-full md:w-auto">
+                        <BookOpen size={20} /> Outros Módulos
+                      </Button>
+                    </div>
+                    
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                        <button onClick={() => window.open("https://docs.google.com/forms/d/e/1FAIpQLSdriXPpV_c4vrdjlFlVmlH0XNaTzrxq83bqP3dk1OkqawtfyA/viewform?usp=sharing&ouid=110674328640951454240", "_blank")} 
+                        className="text-gray-500 hover:text-purple-600 font-medium text-sm flex items-center justify-center gap-2 mx-auto transition-colors">
+                          <Star size={16} /> Avalie o curso
+                        </button>
+                    </div>
 
+                  </div>
+                </div>
+                <Footer className="text-white/80" />
+              </div>
+            );
+          }
 
-                const feedbackElement = document.createElement('div');
-                feedbackElement.classList.add('p-4', 'rounded-lg', 'border', isCorrect ? 'bg-green-50' : 'bg-red-50', isCorrect ? 'border-green-200' : 'border-red-200');
-                feedbackElement.innerHTML = `
-                    <p class="font-bold text-gray-800">${index + 1}. ${question.question}</p>
-                    <p class="mt-2 ${isCorrect ? 'text-green-800' : 'text-red-800'}"><span class="font-semibold">Sua resposta:</span> ${userAnswer ? `${userAnswerLetter}) ${userAnswer}` : 'Não respondida'}</p>
-                    ${!isCorrect ? `<p class="mt-1 text-gray-700"><span class="font-semibold">Resposta correta:</span> ${correctAnswerLetter}) ${question.answer}</p>` : ''}
-                `;
-                feedbackContainer.appendChild(feedbackElement);
-            });
+          return null;
         }
 
-        startQuizBtn.addEventListener('click', startQuiz);
-        nextQuestionBtn.addEventListener('click', showNextQuestion);
-        restartQuizBtn.addEventListener('click', startQuiz);
-        // [END] Lógica do Quiz
-
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
-
 </body>
 </html>
-
-
-
-
-
-
-
