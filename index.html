@@ -33,6 +33,49 @@
         showInstructions: false,
         showForm: false,
         showParkingInfo: false,
+        formSrc: '',
+        formTentativa: 0,
+        formCarregou: false,
+        formFalhou: false,
+        formTimer: null,
+        init() {
+            // O formulário do Apps Script envia este sinal ao terminar de carregar.
+            // Se o sinal não chegar a tempo, recarregamos o iframe automaticamente.
+            window.addEventListener('message', (ev) => {
+                if (ev.data === 'agendamento-esp-carregado') {
+                    this.formCarregou = true;
+                    this.formFalhou = false;
+                    if (this.formTimer) { clearTimeout(this.formTimer); this.formTimer = null; }
+                }
+            });
+        },
+        abrirFormulario() {
+            this.showForm = true;
+            this.formTentativa = 0;
+            this.formFalhou = false;
+            this.carregarForm();
+        },
+        carregarForm() {
+            if (!this.selectedSpace || !this.selectedSpace.formUrl) return;
+            this.formTentativa++;
+            this.formCarregou = false;
+            this.formFalhou = false;
+            const sep = this.selectedSpace.formUrl.includes('?') ? '&' : '?';
+            this.formSrc = this.selectedSpace.formUrl + sep + 'r=' + Date.now();
+            if (this.formTimer) clearTimeout(this.formTimer);
+            this.formTimer = setTimeout(() => {
+                if (this.formCarregou) return;
+                if (this.formTentativa < 3) this.carregarForm();
+                else this.formFalhou = true;
+            }, 7000);
+        },
+        fecharFormulario() {
+            this.showForm = false;
+            this.formSrc = '';
+            this.formFalhou = false;
+            this.formCarregou = false;
+            if (this.formTimer) { clearTimeout(this.formTimer); this.formTimer = null; }
+        },
         icons: {
             'users': `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2'/><circle cx='9' cy='7' r='4'/></svg>`,
             'book-open': `<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z'/><path d='M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z'/></svg>`,
@@ -321,7 +364,7 @@
                                 <div class="w-full text-center py-4 bg-slate-100 rounded-2xl text-slate-400 text-xs font-black uppercase tracking-widest border border-dashed border-slate-300">Uso Livre</div>
                             </template>
                             <template x-if="!space.reservaNaoNecessaria && !space.statusManutencao">
-                                <button @click="selectedSpace = space; showInstructions = false; showForm = false" class="w-full flex items-center justify-center gap-2 text-white py-4 rounded-2xl font-bold text-sm transition-all shadow-lg active:scale-[0.95]" :class="space.tema === 'verde' ? 'bg-green-700 hover:bg-green-600 shadow-green-100' : 'bg-slate-900 hover:bg-blue-600 shadow-slate-200'">
+                                <button @click="selectedSpace = space; showInstructions = false; fecharFormulario()" class="w-full flex items-center justify-center gap-2 text-white py-4 rounded-2xl font-bold text-sm transition-all shadow-lg active:scale-[0.95]" :class="space.tema === 'verde' ? 'bg-green-700 hover:bg-green-600 shadow-green-100' : 'bg-slate-900 hover:bg-blue-600 shadow-slate-200'">
                                     <span class="w-4.5 h-4.5 block" x-html="icons['calendar']"></span> Ver Agenda Integrada
                                 </button>
                             </template>
@@ -349,7 +392,7 @@
                             <p class="text-white/80 text-xs uppercase tracking-wider font-semibold" x-text="showForm ? 'Formulário de Reserva' : (showInstructions ? 'Instruções de Agendamento' : 'Calendário Oficial em Tempo Real')"></p>
                         </div>
                     </div>
-                    <button @click="selectedSpace = null; showForm = false" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+                    <button @click="selectedSpace = null; fecharFormulario()" class="p-2 hover:bg-white/10 rounded-full transition-colors">
                         <span class="w-6 h-6 block" x-html="icons['x']"></span>
                     </button>
                 </div>
@@ -360,14 +403,32 @@
                     <template x-if="showForm && selectedSpace && selectedSpace.formUrl">
                         <div class="absolute inset-0 z-30 bg-white flex flex-col">
                             <div class="p-3 border-b bg-slate-50 flex items-center justify-between shrink-0">
-                                <button @click="showForm = false" class="flex items-center gap-2 text-blue-600 font-bold text-sm hover:underline">
+                                <button @click="fecharFormulario()" class="flex items-center gap-2 text-blue-600 font-bold text-sm hover:underline">
                                     <span class="w-4 h-4 block" x-html="icons['chevron-left']"></span> Voltar às instruções
                                 </button>
                                 <a :href="selectedSpace.formUrl" target="_blank" class="flex items-center gap-2 text-slate-500 font-semibold text-xs hover:text-blue-600 transition-colors">
                                     <span class="w-3.5 h-3.5 block" x-html="icons['external-link']"></span> Abrir em nova aba
                                 </a>
                             </div>
-                            <iframe :src="selectedSpace.formUrl" class="w-full flex-1 border-none" title="Formulário de Reserva" allow="clipboard-write"></iframe>
+                            <div class="relative flex-1">
+                                <iframe :src="formSrc" class="absolute inset-0 w-full h-full border-none" title="Formulário de Reserva" allow="clipboard-write"></iframe>
+
+                                <!-- Overlay: carregando (aguardando sinal do formulário) -->
+                                <div x-show="!formCarregou && !formFalhou" class="absolute inset-0 bg-white flex flex-col items-center justify-center gap-4 z-10">
+                                    <div class="w-10 h-10 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
+                                    <p class="text-slate-500 font-semibold text-sm">Carregando formulário...</p>
+                                    <p class="text-slate-400 text-xs" x-show="formTentativa > 1" x-text="'Tentativa ' + formTentativa + ' de 3'"></p>
+                                </div>
+
+                                <!-- Overlay: falha após as tentativas -->
+                                <div x-show="formFalhou" class="absolute inset-0 bg-slate-50 flex flex-col items-center justify-center gap-5 z-10 p-6 text-center">
+                                    <p class="text-slate-600 font-medium text-sm max-w-sm leading-relaxed">O formulário demorou para responder. Você pode tentar novamente ou abri-lo em uma nova aba.</p>
+                                    <div class="flex gap-3 flex-wrap justify-center">
+                                        <button @click="formTentativa = 0; carregarForm()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-sm transition-colors shadow-md">Tentar novamente</button>
+                                        <a :href="selectedSpace.formUrl" target="_blank" class="px-6 py-3 bg-green-700 hover:bg-green-600 text-white rounded-xl font-bold text-sm transition-colors shadow-md">Abrir em nova aba</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </template>
                     <!-- Tela de Instruções -->
@@ -383,7 +444,7 @@
                                         Para reservar preencha a planilha clicando no botão ao lado &gt;
                                     </div>
                                     <template x-if="selectedSpace && selectedSpace.formUrl">
-                                        <button @click="showForm = true" 
+                                        <button @click="abrirFormulario()" 
                                            class="flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-2xl font-black text-lg transition-all shadow-xl shadow-blue-200 active:scale-95 group">
                                             <span class="w-5 h-5 block group-hover:translate-x-1 transition-transform" x-html="icons['external-link']"></span>
                                             Reservar
@@ -421,7 +482,7 @@
                         <button @click="showInstructions = true" class="flex-1 md:flex-none flex items-center justify-center gap-2 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md active:scale-95" :class="selectedSpace?.tema === 'verde' ? 'bg-green-700 hover:bg-green-600' : 'bg-blue-600 hover:bg-blue-700'">
                             <span class="w-4 h-4 block" x-html="icons['info']"></span> Reservar
                         </button>
-                        <button @click="selectedSpace = null; showForm = false" class="flex-1 md:flex-none px-5 py-2.5 bg-white border border-slate-200 rounded-xl font-bold text-sm text-slate-600 hover:bg-slate-50">Fechar</button>
+                        <button @click="selectedSpace = null; fecharFormulario()" class="flex-1 md:flex-none px-5 py-2.5 bg-white border border-slate-200 rounded-xl font-bold text-sm text-slate-600 hover:bg-slate-50">Fechar</button>
                     </div>
                 </div>
             </div>
